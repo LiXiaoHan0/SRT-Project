@@ -1,0 +1,59 @@
+{
+    "condition": { //模式配置，仅开发期间生效
+    	"current": 0, //当前激活的模式
+    	"list": [{
+    		"name": "login", //模式名称
+    		"path": "pages/login/login", //启动页面，必选
+    		"query": "" //启动参数，在页面的onLoad函数里面得到
+    	}]
+    },
+	"pages" : [
+        {
+            "path" : "pages/index/index",
+            "style" : {
+                "navigationStyle" : "custom",
+                "enablePullDownRefresh" : true
+            }
+        },
+        {
+            "path" : "pages/login/login",
+            "style" : {
+                "navigationBarTitleText" : "完善信息",
+                "enablePullDownRefresh" : false
+            }
+        },
+        {
+            "path" : "pages/mine/mine",
+            "style" : {
+                "enablePullDownRefresh" : true
+            }
+        }
+    ],
+    "globalStyle" : {
+        "navigationBarTextStyle" : "black",
+        "navigationBarTitleText" : "iCenter-3D打印预约",
+        "navigationBarBackgroundColor" : "#FFFFFF",
+        "backgroundColor" : "#F8F8F8",
+        "enablePullDownRefresh" : true
+    },
+    "tabBar" : {
+        "color" : "#7A7E83",
+        "selectedColor" : "#660874",
+        "borderStyle" : "black",
+        "backgroundColor" : "#FFFFFF",
+        "list" : [
+            {
+                "pagePath" : "pages/index/index",
+                "iconPath" : "static/tabbar/grid.png",
+                "selectedIconPath" : "static/tabbar/grid_active.png",
+                "text" : "列表"
+            },
+            {
+                "pagePath" : "pages/mine/mine",
+                "iconPath" : "static/tabbar/me.png",
+                "selectedIconPath" : "static/tabbar/me_active.png",
+                "text" : "我的"
+            }
+        ]
+    }
+}

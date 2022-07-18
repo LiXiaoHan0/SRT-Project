@@ -1,0 +1,36 @@
+{
+    "pages": [
+        "pages/index/index",
+        "pages/login/login",
+        "pages/mine/mine"
+    ],
+    "window": {
+        "navigationBarTextStyle": "black",
+        "navigationBarTitleText": "iCenter-3D打印预约",
+        "navigationBarBackgroundColor": "#FFFFFF",
+        "backgroundColor": "#F8F8F8",
+        "enablePullDownRefresh": true
+    },
+    "tabBar": {
+        "color": "#7A7E83",
+        "selectedColor": "#660874",
+        "borderStyle": "black",
+        "backgroundColor": "#FFFFFF",
+        "list": [
+            {
+                "pagePath": "pages/index/index",
+                "iconPath": "static/tabbar/grid.png",
+                "selectedIconPath": "static/tabbar/grid_active.png",
+                "text": "列表"
+            },
+            {
+                "pagePath": "pages/mine/mine",
+                "iconPath": "static/tabbar/me.png",
+                "selectedIconPath": "static/tabbar/me_active.png",
+                "text": "我的"
+            }
+        ]
+    },
+    "usingComponents": {},
+    "sitemapLocation": "sitemap.json"
+}

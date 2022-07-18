@@ -1,0 +1,10 @@
+/* 清华配色 */
+/* 字体家族 */
+.avatar-wrapper.data-v-b237504c {
+  padding: 0;
+  width: 86px;
+  height: 86px;
+  margin: 20px 0;
+  border-radius: 50%;
+  border: #ab6db4 solid 3px;
+}

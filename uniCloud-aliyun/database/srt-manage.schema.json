@@ -1,0 +1,30 @@
+{
+	"bsonType": "object",
+	"required": ["uno", "day", "eno", "allow"],
+	"permission": {
+		"read": false,
+		"create": false,
+		"update": false,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "管理ID，系统自动生成"
+		},
+		"uno": {
+			"description": "管理人ID",
+			"bsonType": "string",
+			"foreignKey": "srt-user._id",
+			"errorMessage": "管理员不存在"
+		},
+		"day": {
+			"description": "管理日期",
+			"bsonType": "date"
+		},
+		"occupy": {
+			"description": "无法预约的时间",
+			"bsonType": "array",
+			"defaultValue": []
+		}
+	}
+}

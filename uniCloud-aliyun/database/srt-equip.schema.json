@@ -1,0 +1,23 @@
+{
+	"bsonType": "object",
+	"required": ["name"],
+	"permission": {
+		"read": false,
+		"create": false,
+		"update": false,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "设备编号"
+		},
+		"name": {
+			"description": "设备名称",
+			"bsonType": "string"
+		},
+		"detail": {
+			"description": "设备详情",
+			"bsonType": "string"
+		}
+	}
+}

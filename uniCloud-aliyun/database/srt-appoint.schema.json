@@ -1,0 +1,39 @@
+{
+	"bsonType": "object",
+	"required": ["uno", "eno", "appoint"],
+	"permission": {
+		"read": false,
+		"create": false,
+		"update": false,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "预约ID，系统自动生成"
+		},
+		"uno": {
+			"description": "预约人ID",
+			"bsonType": "string",
+			"foreignKey": "srt-user._id"
+		},
+		"eno": {
+			"description": "设备ID",
+			"bsonType": "string",
+			"foreignKey": "srt-equip._id"
+		},
+		"day": {
+			"description": "预约日期",
+			"bsonType": "date"
+		},
+		"appoint": {
+			"description": "预约时间",
+			"bsonType": "int",
+			"minimun": 1,
+			"maxinum": 16383
+		},
+		"detail": {
+			"description": "预约理由",
+			"bsonType": "string"
+		}
+	}
+}
