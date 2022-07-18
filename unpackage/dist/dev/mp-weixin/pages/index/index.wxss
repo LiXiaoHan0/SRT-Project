@@ -22,7 +22,7 @@
 .nickname.data-v-57280228 {
   position: relative;
   left: -40px;
-  min-width: 80px;
+  min-width: 90px;
   max-width: 120px;
   padding: 3px 15px 5px 40px;
   font: bold large "Roboto", sans-serif;

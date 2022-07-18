@@ -13,11 +13,11 @@ let state = {
 					role: [],
 					nickname: '未登录用户'
 				}
-			} else if (!state.info.role) {
+			} else if (!state.info.mobile) {
 				return {
 					role: ['VISITOR'],
 					nickname: '微信匿名用户'
-				}
+				} 
 			} else {
 				return state.info
 			}

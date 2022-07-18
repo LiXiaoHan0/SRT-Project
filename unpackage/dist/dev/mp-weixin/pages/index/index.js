@@ -45,7 +45,7 @@ const _sfc_main = {
     buttonText() {
       if (!this.login)
         return "\u5FAE\u4FE1\n\u767B\u9646";
-      else if (!this.userInfo.nickname)
+      else if (!this.userInfo.mobile)
         return "\u5B8C\u5584\n\u4FE1\u606F";
       else
         return "\u4FEE\u6539\n\u4FE1\u606F";
@@ -53,15 +53,14 @@ const _sfc_main = {
   }),
   onLoad() {
   },
+  onPullDownRefresh() {
+    this.refreshUser("\u5237\u65B0\u6210\u529F");
+  },
   methods: __spreadProps(__spreadValues({}, common_vendor.mapMutations({
     setUserInfo: "user/login"
   })), {
-    gotologin() {
-      if (this.login) {
-        common_vendor.index.navigateTo({
-          url: "../login/login?uid=" + this.userInfo.uid + "&change=" + (this.userInfo.nickname ? "true" : "false")
-        });
-      } else {
+    refreshUser(text) {
+      return new Promise((resolve, reject) => {
         common_vendor.index.showLoading({
           mask: true
         }).then(() => {
@@ -82,25 +81,43 @@ const _sfc_main = {
           result
         }) => {
           console.log(result);
-          if ("nickname" in result.userInfo) {
+          if ("mobile" in result.userInfo) {
             this.setUserInfo(result.userInfo);
             common_vendor.index.hideLoading();
             common_vendor.index.showToast({
-              title: "\u767B\u5F55\u6210\u529F",
+              title: text,
               icon: "success"
             });
-            console.log("\u767B\u5F55\u6210\u529F", result);
+            console.log(text);
+            resolve({ bind: true });
           } else {
+            common_vendor.index.hideLoading();
+            resolve({ bind: false, uid: result.uid });
+          }
+        }).catch((err) => {
+          reject(err);
+        });
+      });
+    },
+    goToLogin() {
+      console.log(this.userInfo);
+      if (this.login) {
+        common_vendor.index.navigateTo({
+          url: "../login/login?uid=" + this.userInfo._id + "&change=" + (this.userInfo.mobile ? "true" : "false")
+        });
+      } else {
+        this.refreshUser("\u767B\u5F55\u6210\u529F").then((res) => {
+          if (!res.bind) {
             common_vendor.index.navigateTo({
-              url: "../login/login?uid=" + result.uid + "&change=false"
-            }).then(common_vendor.index.hideLoading());
+              url: "../login/login?uid=" + res.uid + "&change=false"
+            });
           }
         }).catch((err) => {
           console.log(err);
-          common_vendor.index.hideLoading().then(common_vendor.index.showToast({
+          common_vendor.index.showToast({
             icon: "error",
             title: "\u670D\u52A1\u5668\u8BF7\u6C42\u9519\u8BEF"
-          }));
+          });
         });
       }
     }
@@ -134,7 +151,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     }),
     e: common_vendor.t(_ctx.userInfo.nickname),
     f: common_vendor.t($options.buttonText),
-    g: common_vendor.o($options.gotologin),
+    g: common_vendor.o($options.goToLogin),
     h: common_vendor.p({
       bgcolor: "#FFFFFF00",
       bordcolor: "#FFFFFF",

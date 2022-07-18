@@ -7,7 +7,7 @@
 				<uni-tag class="identity" :text="identity[0]" :type="identity[1]"></uni-tag>
 				<view class="nickname">{{userInfo.nickname}}</view>
 			</view>
-			<uni-button bgcolor="#FFFFFF00" bordcolor="#FFFFFF" hovercolor="#FFFFFF66" style="margin-top:20px;" @click="gotologin">
+			<uni-button bgcolor="#FFFFFF00" bordcolor="#FFFFFF" hovercolor="#FFFFFF66" style="margin-top:20px;" @click="goToLogin">
 				<text>{{buttonText}}</text>
 			</uni-button>
 		</view>
@@ -46,23 +46,22 @@
 			buttonText(){
 				if(!this.login)
 					return "微信\n登陆"
-				else if(!this.userInfo.nickname)
+				else if(!this.userInfo.mobile)
 					return "完善\n信息"
 				else
 					return "修改\n信息"
 			}
 		},
 		onLoad() {},
+		onPullDownRefresh(){ // 下拉刷新
+			this.refreshUser('刷新成功')
+		},
 		methods: {
 			...mapMutations({
 				setUserInfo: 'user/login'
 			}),
-			gotologin() {
-				if(this.login){
-					uni.navigateTo({
-						url: '../login/login?uid=' + this.userInfo.uid + '&change='+(this.userInfo.nickname?"true":"false")
-					})
-				} else {
+			refreshUser(text){ // 更新用户信息
+				return new Promise((resolve,reject)=>{
 					uni.showLoading({
 						mask: true
 					}).then(() => {
@@ -83,25 +82,42 @@
 						result
 					}) => {
 						console.log(result)
-						if ('nickname' in result.userInfo) {
+						if ('mobile' in result.userInfo) {
 							this.setUserInfo(result.userInfo)
 							uni.hideLoading()
 							uni.showToast({
-								title: '登录成功',
+								title: text,
 								icon: 'success'
 							});
-							console.log('登录成功', result);
-						} else {
+							console.log(text);resolve({bind:true});
+						}else{
+							uni.hideLoading()
+							resolve({bind:false,uid:result.uid})
+						}
+					}).catch(err=>{
+						reject(err)
+					})
+				})
+			},
+			goToLogin() {
+				console.log(this.userInfo)
+				if(this.login){
+					uni.navigateTo({
+						url: '../login/login?uid=' + this.userInfo._id + '&change='+(this.userInfo.mobile?'true':'false')
+					})
+				} else {
+					this.refreshUser('登录成功').then(res=>{
+						if(!res.bind){
 							uni.navigateTo({
-								url: '../login/login?uid=' + result.uid + '&change=false'
-							}).then(uni.hideLoading())
+								url: '../login/login?uid=' + res.uid + '&change=false'
+							})
 						}
 					}).catch(err => {
 						console.log(err)
-						uni.hideLoading().then(uni.showToast({
+						uni.showToast({
 							icon: 'error',
-							title: "服务器请求错误"|| err.msg
-						}))
+							title: "服务器请求错误"|| err.message
+						})
 					})
 				}
 			}
@@ -136,7 +152,7 @@
 	.nickname {
 		position: relative;
 		left: -40px;
-		min-width: 80px;
+		min-width: 90px;
 		max-width: 120px;
 		padding: 3px 15px 5px 40px;
 		font: bold large $body-font-family;

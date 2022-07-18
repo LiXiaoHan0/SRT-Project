@@ -21,7 +21,7 @@ var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 var common_vendor = require("../../common/vendor.js");
 let userId = null;
 const defaultUrl = "../../static/grey.jpg";
-const CloudUrl = "3fb0c0dd-0642-4372-acb5-e48e25112ffa";
+const CloudUrl = "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-340aeb7f-4bf8-464b-ba11-8d1b8bc075d5/518ca3c0-e0f6-4513-9b26-da31091427f3.jpg";
 const _sfc_main = {
   data() {
     return {
@@ -47,7 +47,7 @@ const _sfc_main = {
             errorMessage: "\u8BF7\u586B\u5199\u59D3\u540D"
           }, {
             minLength: 2,
-            maxLength: 5,
+            maxLength: 10,
             errorMessage: "\u59D3\u540D\u957F\u5EA6\u5E94\u5728 {minLength} \u5230 {maxLength} \u4E2A\u5B57\u7B26"
           }]
         },
@@ -119,25 +119,21 @@ const _sfc_main = {
           resolve({
             fileID: CloudUrl
           });
+        } else if (this.loginData.avatar === this.userInfo.avatar) {
+          resolve({
+            fileID: this.loginData.avatar
+          });
         } else {
-          common_vendor.index.downloadFile({
-            url: this.loginData.avatar
-          }).then((res) => {
-            if (res.statusCode === 200) {
-              console.log(res.tempFilePath);
-              common_vendor.tn.uploadFile({
-                filePath: res.tempFilePath,
-                cloudPath,
-                fileType: "image",
-                success: (res2) => {
-                  resolve(res2);
-                },
-                fail: (err) => {
-                  reject(err);
-                }
-              });
-            } else {
-              reject(res);
+          console.log(this.loginData.avatar);
+          common_vendor.tn.uploadFile({
+            filePath: this.loginData.avatar,
+            cloudPath,
+            fileType: "image",
+            success: (res) => {
+              resolve(res);
+            },
+            fail: (err) => {
+              reject(err);
             }
           });
         }
@@ -147,16 +143,21 @@ const _sfc_main = {
         });
         console.log("\u4E0A\u4F20\u6210\u529F", data);
         const db = common_vendor.tn.database();
-        const usersTable = db.collection("uni-id-users");
-        return usersTable.where('_id=="' + userId + '"').update(data).then((res) => {
-          console.log(res);
-          this.setUserInfo(data);
-          common_vendor.index.hideLoading();
-          common_vendor.index.showToast({
-            title: "\u4FE1\u606F\u63D0\u4EA4\u6210\u529F",
-            icon: "success",
-            complete: common_vendor.index.navigateBack()
+        return new Promise((resolve, reject) => {
+          db.collection("uni-id-users").where('_id=="' + userId + '"').update(data).then((res) => {
+            console.log(res);
+            this.setUserInfo(data);
+            resolve();
+          }).catch((err) => {
+            reject(err);
           });
+        });
+      }).then(() => {
+        common_vendor.index.hideLoading();
+        common_vendor.index.showToast({
+          title: "\u4FE1\u606F\u63D0\u4EA4\u6210\u529F",
+          icon: "success",
+          complete: common_vendor.index.navigateBack()
         });
       }).catch((err) => {
         console.log(err);
@@ -170,8 +171,8 @@ const _sfc_main = {
   }),
   onLoad(e) {
     userId = e.uid;
-    let data = this.userInfo;
-    if (e.change) {
+    if (e.change == "true") {
+      let data = this.userInfo;
       this.loginData = {
         nickname: data.nickname,
         avatar: data.avatar,

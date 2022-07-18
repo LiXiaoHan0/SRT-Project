@@ -31,7 +31,7 @@
 	} from 'vuex';
 	let userId = null
 	const defaultUrl = '../../static/grey.jpg'
-	const CloudUrl = '3fb0c0dd-0642-4372-acb5-e48e25112ffa'
+	const CloudUrl = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-340aeb7f-4bf8-464b-ba11-8d1b8bc075d5/518ca3c0-e0f6-4513-9b26-da31091427f3.jpg'
 	export default {
 		data() {
 			return {
@@ -57,7 +57,7 @@
 							errorMessage: '请填写姓名',
 						}, {
 							minLength: 2,
-							maxLength: 5,
+							maxLength: 10,
 							errorMessage: '姓名长度应在 {minLength} 到 {maxLength} 个字符',
 						}],
 					},
@@ -135,25 +135,21 @@
 						resolve({
 							fileID: CloudUrl
 						})
-					} else {
-						uni.downloadFile({
-							url: this.loginData.avatar,
-						}).then(res => {
-							if (res.statusCode === 200) {
-								console.log(res.tempFilePath);
-								uniCloud.uploadFile({
-									filePath: res.tempFilePath,
-									cloudPath,
-									fileType: 'image',
-									success: res => {
-										resolve(res)
-									},
-									fail: err => {
-										reject(err)
-									}
-								})
-							} else {
-								reject(res)
+					} else if(this.loginData.avatar === this.userInfo.avatar){
+						resolve({
+							fileID: this.loginData.avatar
+						})
+					}else{
+						console.log(this.loginData.avatar);
+						uniCloud.uploadFile({
+							filePath: this.loginData.avatar,
+							cloudPath,
+							fileType: 'image',
+							success: res => {
+								resolve(res)
+							},
+							fail: err => {
+								reject(err)
 							}
 						})
 					}
@@ -164,16 +160,21 @@
 					console.log("上传成功", data);
 					// 使用 clientDB 提交数据
 					const db = uniCloud.database();
-					const usersTable = db.collection('uni-id-users')
-					return usersTable.where('_id==\"' + userId + '\"').update(data).then(res => {
-						console.log(res);
-						this.setUserInfo(data);
-						uni.hideLoading()
-						uni.showToast({
-							title:'信息提交成功',
-							icon: 'success',
-							complete: uni.navigateBack()
+					return new Promise((resolve,reject)=>{
+						db.collection('uni-id-users').where('_id==\"'+userId+'\"').update(data).then(res => {
+							console.log(res);
+							this.setUserInfo(data);
+							resolve()
+						}).catch(err=>{
+							reject(err)
 						})
+					})
+				}).then(()=>{
+					uni.hideLoading()
+					uni.showToast({
+						title:'信息提交成功',
+						icon: 'success',
+						complete: uni.navigateBack()
 					})
 				}).catch(err => {
 					console.log(err)
@@ -186,9 +187,9 @@
 			}
 		},
 		onLoad(e) {
-			userId = e.uid
-			let data=this.userInfo
-			if(e.change){
+			userId=e.uid
+			if(e.change=='true'){
+				let data=this.userInfo
 				this.loginData={
 					nickname: data.nickname,
 					avatar: data.avatar,

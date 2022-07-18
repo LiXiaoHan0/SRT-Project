@@ -11,7 +11,7 @@ let state = {
         role: [],
         nickname: "\u672A\u767B\u5F55\u7528\u6237"
       };
-    } else if (!state2.info.role) {
+    } else if (!state2.info.mobile) {
       return {
         role: ["VISITOR"],
         nickname: "\u5FAE\u4FE1\u533F\u540D\u7528\u6237"

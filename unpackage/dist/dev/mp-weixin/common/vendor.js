@@ -6555,7 +6555,7 @@ function l(e2) {
 function h(e2) {
   return e2 && typeof e2 == "string" ? JSON.parse(e2) : e2;
 }
-const d = true, f = "mp-weixin", g = h('{\n    "address": [\n        "127.0.0.1",\n        "192.168.3.16"\n    ],\n    "debugPort": 50887,\n    "initialLaunchType": "local",\n    "servePort": 50888,\n    "skipFiles": [\n        "<node_internals>/**/*.js",\n        "D:/HBuilderX/plugins/unicloud/**/*.js"\n    ]\n}\n'), p = h('[{"provider":"aliyun","spaceName":"cloud-3dprint","spaceId":"340aeb7f-4bf8-464b-ba11-8d1b8bc075d5","clientSecret":"BV47QBfwcQ6EocSRJlvRxQ==","endpoint":"https://api.bspapp.com"}]');
+const d = true, f = "mp-weixin", g = h('{\n    "address": [\n        "127.0.0.1",\n        "192.168.3.16"\n    ],\n    "debugPort": 50915,\n    "initialLaunchType": "local",\n    "servePort": 50916,\n    "skipFiles": [\n        "<node_internals>/**/*.js",\n        "D:/HBuilderX/plugins/unicloud/**/*.js"\n    ]\n}\n'), p = h('[{"provider":"aliyun","spaceName":"cloud-3dprint","spaceId":"340aeb7f-4bf8-464b-ba11-8d1b8bc075d5","clientSecret":"BV47QBfwcQ6EocSRJlvRxQ==","endpoint":"https://api.bspapp.com"}]');
 let y = "";
 try {
   y = "__UNI__A391B9E";
