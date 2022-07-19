@@ -4,7 +4,10 @@
 			<cloud-image class="avatar" v-if="userInfo.avatar" :src="userInfo.avatar"></cloud-image>
 			<image v-else class="avatar" src="@/static/grey.jpg"></image>
 			<view class="col-flex" style="align-items: flex-start;">
-				<uni-tag class="identity" :text="identity[0]" :type="identity[1]"></uni-tag>
+				<view class="row-flex">
+					<uni-tag class="identity" :text="identity[0]" :type="identity[1]"></uni-tag>
+					<uni-icons type="refreshempty" size="20" color="#FFFFFF" @click="refreshUser('刷新成功')"></uni-icons>
+				</view>
 				<view class="nickname">{{userInfo.nickname}}</view>
 			</view>
 			<uni-button bgcolor="#FFFFFF00" bordcolor="#FFFFFF" hovercolor="#FFFFFF66" style="margin-top:20px;" @click="goToLogin">
@@ -53,14 +56,16 @@
 			}
 		},
 		onLoad() {},
-		onPullDownRefresh(){ // 下拉刷新
-			this.refreshUser('刷新成功')
+		// 下拉刷新
+		onPullDownRefresh(){ 
+			
 		},
 		methods: {
 			...mapMutations({
 				setUserInfo: 'user/login'
 			}),
-			refreshUser(text){ // 更新用户信息
+			// 更新用户信息
+			refreshUser(text){ 
 				return new Promise((resolve,reject)=>{
 					uni.showLoading({
 						mask: true
@@ -83,6 +88,8 @@
 					}) => {
 						console.log(result)
 						if ('mobile' in result.userInfo) {
+							//保存用户信息
+							result.userInfo.uid = result.uid
 							this.setUserInfo(result.userInfo)
 							uni.hideLoading()
 							uni.showToast({
@@ -99,11 +106,12 @@
 					})
 				})
 			},
+			// 点击登录按钮
 			goToLogin() {
-				console.log(this.userInfo)
+				console.log(this.userInfo.uid)
 				if(this.login){
 					uni.navigateTo({
-						url: '../login/login?uid=' + this.userInfo._id + '&change='+(this.userInfo.mobile?'true':'false')
+						url: '../login/login?uid=' + this.userInfo.uid + '&change='+(this.userInfo.mobile?'true':'false')
 					})
 				} else {
 					this.refreshUser('登录成功').then(res=>{
@@ -145,15 +153,14 @@
 	}
 
 	.identity {
-		height: 30px;
-		margin: 10px 15px;
+		height: 24px;
+		margin: 15px 15px;
 	}
 
 	.nickname {
 		position: relative;
 		left: -40px;
-		min-width: 90px;
-		max-width: 120px;
+		width: 120px;
 		padding: 3px 15px 5px 40px;
 		font: bold large $body-font-family;
 		text-align: center;

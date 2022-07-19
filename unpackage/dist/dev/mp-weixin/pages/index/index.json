@@ -1,9 +1,0 @@
-{
-  "navigationStyle": "custom",
-  "enablePullDownRefresh": true,
-  "usingComponents": {
-    "cloud-image": "../../components/cloud-image/cloud-image",
-    "uni-tag": "../../uni_modules/uni-tag/components/uni-tag/uni-tag",
-    "uni-button": "../../components/uni-button/uni-button"
-  }
-}

@@ -1,1 +1,0 @@
-<view class="buttons data-v-f2d01f38" hover-class="buttons-hover" style="{{a}}" hover-stay-time="100" bindtap="{{b}}"><slot/></view>

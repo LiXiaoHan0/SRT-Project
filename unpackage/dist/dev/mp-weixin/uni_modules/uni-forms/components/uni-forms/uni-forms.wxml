@@ -1,1 +1,0 @@
-<view class="{{['uni-forms', c && 'uni-forms--top']}}"><form catchsubmit="{{a}}" bindreset="{{b}}"><slot></slot></form></view>

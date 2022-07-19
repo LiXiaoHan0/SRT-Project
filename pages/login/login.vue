@@ -155,7 +155,8 @@
 					}
 				}).then(result => {
 					let data = Object.assign({}, detail, {
-						avatar: result.fileID
+						avatar: result.fileID,
+						school_id:detail.school_id || ''
 					})
 					console.log("上传成功", data);
 					// 使用 clientDB 提交数据
@@ -195,7 +196,7 @@
 					avatar: data.avatar,
 					mobile: data.mobile,
 					in_campu: data.school_id?1:0,
-					school_id: data.school_id || '',
+					school_id: data.school_id,
 					role: data.role 
 				}
 			}
