@@ -6,7 +6,7 @@
 			<view class="col-flex" style="align-items: flex-start;">
 				<view class="row-flex">
 					<uni-tag class="identity" :text="identity[0]" :type="identity[1]"></uni-tag>
-					<uni-icons type="refreshempty" size="20" color="#FFFFFF" @click="refreshUser('刷新成功')"></uni-icons>
+					<uni-icons v-if="login" type="refreshempty" size="20" color="#FFFFFF" @click="refreshUser('刷新成功')"></uni-icons>
 				</view>
 				<view class="nickname">{{userInfo.nickname}}</view>
 			</view>
@@ -86,11 +86,10 @@
 					}).then(({
 						result
 					}) => {
-						console.log(result)
+						//保存用户信息
+						result.userInfo.uid = result.uid
+						this.setUserInfo(result.userInfo)
 						if ('mobile' in result.userInfo) {
-							//保存用户信息
-							result.userInfo.uid = result.uid
-							this.setUserInfo(result.userInfo)
 							uni.hideLoading()
 							uni.showToast({
 								title: text,
@@ -108,7 +107,6 @@
 			},
 			// 点击登录按钮
 			goToLogin() {
-				console.log(this.userInfo.uid)
 				if(this.login){
 					uni.navigateTo({
 						url: '../login/login?uid=' + this.userInfo.uid + '&change='+(this.userInfo.mobile?'true':'false')

@@ -14,9 +14,8 @@ let state = {
 					nickname: '未登录用户'
 				}
 			} else if (!state.info.mobile) {
-				console.log(state.info)
 				return {
-					_id:state.info._id,
+					uid: state.info.uid,
 					role: ['VISITOR'],
 					nickname: '微信匿名用户'
 				} 

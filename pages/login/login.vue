@@ -188,6 +188,7 @@
 			}
 		},
 		onLoad(e) {
+			console.log(e.uid)
 			userId=e.uid
 			if(e.change=='true'){
 				let data=this.userInfo
