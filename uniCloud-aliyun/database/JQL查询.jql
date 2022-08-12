@@ -9,4 +9,13 @@
 // 详细JQL语法，请参考：https://uniapp.dcloud.net.cn/uniCloud/jql.html
 
 // 下面示例查询uni-id-users表的所有数据
-db.collection('uni-id-users').get();
+db.collection('srt-appoint').add({
+	uid:"62d61ccccc12f400012faa9b",
+	eid:"62d823a5f17d020001b94f00",
+	start:44,
+	end:46,
+	detail:'我先升级吧！'
+})
+db.collection('srt-appoint').field('date').get();
+db.collection('srt-appoint').where('dateToString(date,\"%Y-%m-%d\")==\"2022-07-21\" && start<=45 && end>=45').field('_id').get()
+db.collection('srt-appoint').where(`_id=="62dbb5a966ea6e0001b425c3"`).field('uid,start,end,teacher,title').get()

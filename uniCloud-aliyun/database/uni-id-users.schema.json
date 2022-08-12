@@ -23,14 +23,6 @@
 			"description": "密码，加密存储",
 			"trim": "both"
 		},
-		"password_secret_version": {
-			"bsonType": "int",
-			"permission": {
-				"read": false
-			},
-			"title": "passwordSecret",
-			"description": "密码使用的passwordSecret版本"
-		},
 		"nickname": {
 			"bsonType": "string",
 			"title": "昵称",
@@ -39,9 +31,6 @@
 		},
 		"gender": {
 			"bsonType": "int",
-			"permission": {
-				"read": false
-			},
 			"title": "性别",
 			"description": "用户性别：0 未知 1 男性 2 女性",
 			"defaultValue": 0,
@@ -56,12 +45,9 @@
 				"value": 2
 			}]
 		},
-		"status": {
+		"statu": {
 			"bsonType": "int",
-			"permission": {
-				"read": false
-			},
-			"description": "用户状态：0 正常 1 禁用 2 审核中 3 审核拒绝",
+			"description": "用户状态：0 正常 1 禁用",
 			"title": "用户状态",
 			"defaultValue": 0,
 			"enum": [{
@@ -70,12 +56,6 @@
 			}, {
 				"text": "禁用",
 				"value": 1
-			}, {
-				"text": "审核中",
-				"value": 2
-			}, {
-				"text": "审核拒绝",
-				"value": 3
 			}]
 		},
 		"mobile": {
@@ -84,48 +64,6 @@
 			"description": "手机号码",
 			"pattern": "^\\+?[0-9-]{3,20}$",
 			"trim": "both"
-		},
-		"mobile_confirmed": {
-			"bsonType": "int",
-			"permission": {
-				"read": false
-			},
-			"description": "手机号验证状态：0 未验证 1 已验证",
-			"title": "手机号验证状态",
-			"defaultValue": 0,
-			"enum": [{
-				"text": "未验证",
-				"value": 0
-			}, {
-				"text": "已验证",
-				"value": 1
-			}]
-		},
-		"email": {
-			"bsonType": "string",
-			"permission": {
-				"read": false
-			},
-			"format": "email",
-			"title": "邮箱",
-			"description": "邮箱地址",
-			"trim": "both"
-		},
-		"email_confirmed": {
-			"bsonType": "int",
-			"permission": {
-				"read": false
-			},
-			"description": "邮箱验证状态：0 未验证 1 已验证",
-			"title": "邮箱验证状态",
-			"defaultValue": 0,
-			"enum": [{
-				"text": "未验证",
-				"value": 0
-			}, {
-				"text": "已验证",
-				"value": 1
-			}]
 		},
 		"avatar": {
 			"bsonType": "string",
@@ -136,23 +74,7 @@
 		"school_id": {
 			"bsonType": "string",
 			"title": "学号",
-			"description": "学号",
-			"minLength": 10,
-			"maxLength": 10
-		},
-		"department_id": {
-			"bsonType": "array",
-			"permission": {
-				"read": false
-			},
-			"description": "部门ID",
-			"title": "部门",
-			"enumType": "tree",
-			"enum": {
-				"collection": "opendb-department",
-				"orderby": "name asc",
-				"field": "_id as value, name as text"
-			}
+			"description": "学号"
 		},
 		"role": {
 			"bsonType": "array",

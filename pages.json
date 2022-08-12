@@ -5,27 +5,48 @@
     		"name": "login", //模式名称
     		"path": "pages/login/login", //启动页面，必选
     		"query": "" //启动参数，在页面的onLoad函数里面得到
+    	},{
+    		"name": "equip", //模式名称
+    		"path": "pages/equip/equip", //启动页面，必选
+    		"query": "eid=62d823a5f17d020001b94f00" //启动参数，在页面的onLoad函数里面得到
+    	},{
+    		"name": "show", //模式名称
+    		"path": "pages/show/show", //启动页面，必选
+    		"query": "type=profile&text=用户详细信息&id=62e0d8958c195b0001942e0e" //启动参数，在页面的onLoad函数里面得到
     	}]
     },
 	"pages" : [
-        {
+		{
             "path" : "pages/index/index",
             "style" : {
-                "navigationStyle" : "custom",
-                "enablePullDownRefresh" : true
+                "navigationStyle" : "custom"
             }
-        },
-        {
+        },{
             "path" : "pages/login/login",
             "style" : {
                 "navigationBarTitleText" : "完善信息",
                 "enablePullDownRefresh" : false
             }
-        },
-        {
+        },{
             "path" : "pages/mine/mine",
             "style" : {
                 "enablePullDownRefresh" : true
+            }
+        },{
+            "path" : "pages/equip/equip",
+            "style" : {
+                "navigationBarTitleText": "设备信息"
+            }            
+        },{
+            "path" : "pages/appoint/appoint",
+            "style" :{
+                "navigationBarTitleText": "预约设备",
+                "enablePullDownRefresh": false
+            } 
+        },{
+            "path" : "pages/show/show",
+            "style" :{
+                "enablePullDownRefresh": false
             }
         }
     ],
@@ -47,8 +68,7 @@
                 "iconPath" : "static/tabbar/grid.png",
                 "selectedIconPath" : "static/tabbar/grid_active.png",
                 "text" : "列表"
-            },
-            {
+            },{
                 "pagePath" : "pages/mine/mine",
                 "iconPath" : "static/tabbar/me.png",
                 "selectedIconPath" : "static/tabbar/me_active.png",

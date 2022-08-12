@@ -1,11 +1,11 @@
 {
 	"bsonType": "object",
-	"required": ["name"],
+	"required": ["name", "order"],
 	"permission": {
-		"read": false,
-		"create": false,
-		"update": false,
-		"delete": false
+		"read": true,
+		"create": "'AUDITOR' in auth.role",
+		"update": "'AUDITOR' in auth.role",
+		"delete": "'AUDITOR' in auth.role"
 	},
 	"properties": {
 		"_id": {
@@ -15,8 +15,8 @@
 			"description": "设备名称",
 			"bsonType": "string"
 		},
-		"detail": {
-			"description": "设备详情",
+		"order": {
+			"description": "设备序号",
 			"bsonType": "string"
 		}
 	}

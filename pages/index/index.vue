@@ -1,18 +1,26 @@
 <template>
-	<view style="width: 100%;">
-		<view class="row-flex userinfo">
-			<cloud-image class="avatar" v-if="userInfo.avatar" :src="userInfo.avatar"></cloud-image>
-			<image v-else class="avatar" src="@/static/grey.jpg"></image>
-			<view class="col-flex" style="align-items: flex-start;">
-				<view class="row-flex">
-					<uni-tag class="identity" :text="identity[0]" :type="identity[1]"></uni-tag>
-					<uni-icons v-if="login" type="refreshempty" size="20" color="#FFFFFF" @click="refreshUser('刷新成功')"></uni-icons>
-				</view>
-				<view class="nickname">{{userInfo.nickname}}</view>
+	<!-- 用户信息 -->
+	<view class="row-flex userinfo">
+		<cloud-image class="avatar" v-if="userInfo.avatar" :src="userInfo.avatar"></cloud-image>
+		<image v-else class="avatar" src="@/static/grey.jpg"></image>
+		<view class="col-flex" style="align-items: flex-start;">
+			<view class="row-flex">
+				<uni-tag class="identity" :text="identity[0]" :type="identity[1]" />
+				<uni-icons v-if="login" type="refreshempty" size="20" color="#FFFFFF" @click="goIdentity"></uni-icons>
 			</view>
-			<uni-button bgcolor="#FFFFFF00" bordcolor="#FFFFFF" hovercolor="#FFFFFF66" style="margin-top:20px;" @click="goToLogin">
-				<text>{{buttonText}}</text>
-			</uni-button>
+			<view class="nickname">{{userInfo.nickname}}</view>
+		</view>
+		<uni-button bgcolor="#FFFFFF00" bordcolor="#FFFFFF" hovercolor="#FFFFFF66" style="margin-top:20px;" @click="goToLogin">
+			<text>{{buttonText}}</text>
+		</uni-button>
+	</view>
+	<!-- 设备信息 -->
+	<view class="row-flex" style="flex-wrap:wrap;">
+		<view v-for="equip in equips" :key="equip._id._value" class="equip">
+			<uni-card :title="equip.name" :sub-title="'设备编号：'+equip.order" @click="goAppoint(equip)">
+				<text>状态： </text>
+				<uni-tag :circle="true" :text="equip.state?'使用中':'空闲中'" :type="equip.state?'error':'success'"/>
+			</uni-card>
 		</view>
 	</view>
 </template>
@@ -25,6 +33,7 @@
 	export default {
 		data() {
 			return {
+				equips:[]
 			}
 		},
 		computed: {
@@ -55,17 +64,63 @@
 					return "修改\n信息"
 			}
 		},
-		onLoad() {},
+		// 初始化加载
+		onLoad() {
+			let t=uniCloud.getCurrentUserInfo().tokenExpired
+			if(t<=Date.now()){
+				if(t>0){
+					this.delUserInfo()
+					uni.showToast({
+						icon: 'none',
+						title: "登录过期,请重新登录！"
+					})
+				}
+			} else{
+				this.refreshEquip()
+			}
+		},
 		// 下拉刷新
-		onPullDownRefresh(){ 
-			
+		onPullDownRefresh(){
+			this.refreshEquip()
 		},
 		methods: {
 			...mapMutations({
-				setUserInfo: 'user/login'
+				setUserInfo: 'user/login',
+				delUserInfo: 'user/logout'
 			}),
+			// 更新设备信息
+			refreshEquip(){
+				uni.showLoading({mask:true})
+				// 当前时间常数
+				const time=new Date()
+				const date=time.toISOString().slice(0,10)
+				const hour=(time.getHours()+parseInt(time.getMinutes()/60))<<1
+				// 数据库查询
+				const db = uniCloud.database();
+				const tmp=db.collection('srt-appoint').where(`date=="${date}" && start<=${hour} && end>${hour}`).field('eid,end').getTemp()
+				db.collection('srt-equip',tmp).orderBy('order asc').get().then(({result})=>{
+					console.log(result)
+					for(let i in result.data){
+						let t=result.data[i]
+						if(t._id['srt-appoint'].length){
+							t.state=(t._id['srt-appoint'][0].end-hour)/2
+						} else{
+							t.state=0
+						}
+					}
+					this.equips=result.data
+					uni.hideLoading()
+				}).catch(err=>{
+					console.log(err)
+					uni.hideLoading()
+					uni.showToast({
+						icon: 'error',
+						title: err.code=='TOKEN_INVALID_ANONYMOUS_USER'?'请先完成登录':'服务器请求失败'
+					})
+				})
+			},
 			// 更新用户信息
-			refreshUser(text){ 
+			refreshUser(text){
 				return new Promise((resolve,reject)=>{
 					uni.showLoading({
 						mask: true
@@ -88,6 +143,7 @@
 					}) => {
 						//保存用户信息
 						result.userInfo.uid = result.uid
+						delete result.userInfo.token
 						this.setUserInfo(result.userInfo)
 						if ('mobile' in result.userInfo) {
 							uni.hideLoading()
@@ -118,12 +174,37 @@
 								url: '../login/login?uid=' + res.uid + '&change=false'
 							})
 						}
+						this.refreshEquip()
 					}).catch(err => {
 						console.log(err)
 						uni.showToast({
 							icon: 'error',
-							title: "服务器请求错误"|| err.message
+							title: '服务器请求失败'
 						})
+					})
+				}
+			},
+			// 点击身份刷新
+			goIdentity(){
+				this.refreshUser('更新成功').catch(err =>{
+					console.log(err)
+					uni.hideLoading()
+					uni.showToast({
+						icon: 'error',
+						title: '服务器请求失败'
+					})
+				})
+			},
+			// 点击预约设备
+			goAppoint(equip){
+				if('mobile' in this.userInfo){
+					uni.navigateTo({
+						url:`../equip/equip?eid=${equip._id._value}&name=${equip.name}&order=${equip.order}`
+					})					
+				} else {
+					uni.showToast({
+						icon: 'none',
+						title: "请先完善信息！"
 					})
 				}
 			}
@@ -151,7 +232,7 @@
 	}
 
 	.identity {
-		height: 24px;
+		height: 25px;
 		margin: 15px 15px;
 	}
 
@@ -159,7 +240,8 @@
 		position: relative;
 		left: -40px;
 		width: 120px;
-		padding: 3px 15px 5px 40px;
+		margin-right: -20px;
+		padding: 3px 15px 3px 40px;
 		font: bold large $body-font-family;
 		text-align: center;
 		white-space: nowrap;
@@ -167,5 +249,12 @@
 		text-overflow: ellipsis;
 		background-color: #ffffff;
 		border-radius: 0 15px 15px 0;
+	}
+	
+	// 设备信息栏
+	.equip{
+		width: 50%;
+		min-width: 180px;
+		max-width: 360px;
 	}
 </style>

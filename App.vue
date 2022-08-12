@@ -2,8 +2,8 @@
 	import initApp from '@/common/appInit.js';
 	export default {
 		onLaunch: function() {
-			console.log('App Launch')
 			initApp()
+			console.log('App Launch')
 		},
 		onShow: function() {
 			console.log('App Show')
@@ -26,11 +26,6 @@
 	// 设置整个项目的背景色
 	page {
 		background-color: #f5f5f5;
-	}
-	
-	.topbar {
-		height: var(--status-bar-height);
-		width: 100%;
 	}
 	
 	.row-flex {

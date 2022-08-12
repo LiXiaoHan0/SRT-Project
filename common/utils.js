@@ -1,46 +1,22 @@
-// 登录函数
-function logIn() {
-	// 正式代码
-	return uni.login({
-		"provider": "weixin",
-		"onlyAuthorize": true
-	}).then(res => { // 获取uniID
-		console.log(res.code)
-		return uniCloud.callFunction({
-			name: 'uni-id-cf',
-			data: {
-				action: 'loginByWeixin',
-				params: res.code
-			}
-		})
-	})
-
-	// 开发代码
-	// uni.showLoading({
-	// 	title: '登陆中',
-	// 	mask: true
-	// }).then(() => {
-	// 	return ['user']
-	// 	return ['admin1']
-	// 	return ['admin2-1']
-	// }).then(res => {
-	// 	uni.setStorage({ // 将得到的openid存储到缓存里面方便后面调用
-	// 		key: "cookie",
-	// 		data: res[0]
-	// 	})
-	// }).catch(err => {
-	// 	console.log(err)
-	// 	uni.hideLoading()
-	// 	uni.showToast({
-	// 		title: '微信登录失败',
-	// 		mask: true,
-	// 		icon: 'error'
-	// 	})
-	// })
+// 标准时间格式转化
+const formatTime = date => {
+	const year = date.getFullYear()
+	const month = date.getMonth() + 1
+	const day = date.getDate()
+	const hour = date.getHours()
+	const minute = date.getMinutes()
+	const second = date.getSeconds()
+	
+	return [year, month, day].map(formatNumber).join('-') + ' ' + [hour, minute, second].map(formatNumber).join(':')
 }
-
+	
+const formatNumber = n => {
+	n = n.toString()
+	return n[1] ? n : '0' + n
+}
+	
 // 时间戳转通用时间
-function changeTime(stamp) {
+const changeTime= stamp=> {
 	let now = new Date();
 	let diff = parseInt((now.getTime() - stamp) / 1000)
 	if (diff < 60) {
@@ -58,19 +34,18 @@ function changeTime(stamp) {
 	}
 }
 
-// 错误信息显示函数
-function errInfo(res, title) {
-	console.error(res)
-	var t = ''
-	if (res.data) t = res.data.errmsg
-	uni.showToast({
-		title: t || title,
-		mask: true,
-		icon: 'error'
-	})
+// 数字代码转时间点
+const numtoTime = t => {
+	let h = parseInt(t / 2)
+	if (t % 2 == 1) {
+		return (h <= 9 ? '0' : '') + h + ':30'
+	} else {
+		return (h <= 9 ? '0' : '') + h + ':00'
+	}
 }
+	
 export default {
-	logIn,
-	errInfo,
-	changeTime
+	formatTime,
+	changeTime,
+	numtoTime
 }

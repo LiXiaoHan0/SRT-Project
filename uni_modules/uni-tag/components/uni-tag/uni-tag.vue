@@ -1,5 +1,5 @@
 <template>
-	<text class="uni-tag" v-if="text" :class="classes" :style="customStyle" @click="onClick">{{text}}</text>
+	<text class="uni-tag" v-if="text" :class="classes" :style="customStyle" @click="onClick"><slot/>{{text}}</text>
 </template>
 
 <script>
@@ -121,7 +121,7 @@
 	.uni-tag {
 		line-height: 14px;
 		font-size: 12px;
-		font-weight: 200;
+		font-weight: 300;
 		padding: $tag-default-pd;
 		color: #fff;
 		border-radius: 3px;

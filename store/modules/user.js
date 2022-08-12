@@ -42,7 +42,7 @@ let state = {
 					key: 'uni_id_token',
 					data: state.info.token,
 					complete(e) {
-						// console.log('setStorage-------',e);
+						console.log('setStorage-------',e);
 					}
 				});
 				uni.setStorageSync('uni_id_token_expired', state.info.tokenExpired)

@@ -3,7 +3,7 @@
 		<button class="avatar-wrapper" open-type="chooseAvatar" @chooseavatar="onChooseAvatar">
 			<image style="width: 80px;height: 80px;" :src="loginData.avatar"></image>
 		</button>
-		<uni-forms ref="infoForm" :modelValue="loginData" :rules="rules">
+		<uni-forms label-width="80" ref="infoForm" :modelValue="loginData" :rules="rules">
 			<uni-forms-item required label="姓名" name="nickname">
 				<uni-easyinput type="text" v-model="loginData.nickname" placeholder="请输入姓名" />
 			</uni-forms-item>
@@ -41,7 +41,8 @@
 					mobile: '', // 电话号码
 					in_campu: null, // 是否校内人员
 					school_id: '', // 学号、工号
-					role: ['USER'] // 身份默认普通用户
+					role: ['USER'], // 身份默认普通用户
+					statu: 0 // 账号状态
 				},
 				identity: [{
 					"value": 1,
@@ -54,17 +55,17 @@
 					nickname: {
 						rules: [{
 							required: true,
-							errorMessage: '请填写姓名',
+							errorMessage: '姓名不能为空',
 						}, {
 							minLength: 2,
-							maxLength: 10,
+							maxLength: 5,
 							errorMessage: '姓名长度应在 {minLength} 到 {maxLength} 个字符',
 						}],
 					},
 					mobile: {
 						rules: [{
 							required: true,
-							errorMessage: '请填写电话号码',
+							errorMessage: '电话号码不能为空',
 						}, {
 							minLength: 11,
 							maxLength: 11,
@@ -80,7 +81,7 @@
 					school_id: {
 						rules: [{
 							required: true,
-							errorMessage: '请填写学号/工号',
+							errorMessage: '学号/工号不能为空',
 						}, {
 							minLength: 10,
 							maxLength: 10,
@@ -108,7 +109,7 @@
 			},
 			// 信息校验
 			submitForm(e) {
-				this.$refs.infoForm.validate(['avatar','role']).then(formData => {
+				this.$refs.infoForm.validate(['avatar','role','statu']).then(formData => {
 					delete formData.in_campu
 					if (formData.avatar === defaultUrl) {
 						uni.showModal({
@@ -164,6 +165,7 @@
 					return new Promise((resolve,reject)=>{
 						db.collection('uni-id-users').where('_id==\"'+userId+'\"').update(data).then(res => {
 							console.log(res);
+							delete data.token
 							this.setUserInfo(data);
 							resolve()
 						}).catch(err=>{
@@ -181,8 +183,8 @@
 					console.log(err)
 					uni.hideLoading()
 					uni.showToast({
-						title: err.message || '请求服务失败',
-						icon: 'error'
+						icon: 'error',
+						title: '服务器请求失败'
 					})
 				})
 			}
@@ -198,7 +200,8 @@
 					mobile: data.mobile,
 					in_campu: data.school_id?1:0,
 					school_id: data.school_id,
-					role: data.role 
+					role: data.role,
+					statu: data.statu
 				}
 			}
 		}

@@ -1,6 +1,6 @@
 {
   "passwordSecret": "passwordSecret-demo",
-  "tokenSecret": "tokenSecret-demo",
+  "tokenSecret": "3D-Project",
   "tokenExpiresIn": 7200,
   "tokenExpiresThreshold": 600,
   "passwordErrorLimit": 6,
@@ -22,6 +22,7 @@
     }
   },
   "mp-weixin": {
+	"tokenExpiresIn": 259200,
     "oauth": {
       "weixin": {
         "appid" : "wx84cb6e4e1adbe657",
