@@ -52,7 +52,7 @@
     ],
     "globalStyle" : {
         "navigationBarTextStyle" : "black",
-        "navigationBarTitleText" : "iCenter-3D打印预约",
+        "navigationBarTitleText" : "机械系实验中心",
         "navigationBarBackgroundColor" : "#FFFFFF",
         "backgroundColor" : "#F8F8F8",
         "enablePullDownRefresh" : true

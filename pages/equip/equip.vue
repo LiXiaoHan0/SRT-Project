@@ -8,7 +8,7 @@
 			<view class="col-flex" v-for="t in 13" :key="t">
 				<view class="divline"></view>
 				<view class="time">{{(t==1?'0':'')+(t+8)}}</view> 
-				<view v-if="t==13" class="divline"></view>
+				<!-- <view v-if="t==13" class="divline"></view> -->
 			</view>
 		</view>
 		<view v-for="(day,i) in periods" :key="i" style="width:13%;margin:3px 0;">
@@ -41,7 +41,7 @@
 			// 参数处理
 			calHeight(period){
 				return {
-					'--height':+31*period._value-6+'px',
+					'--height':20*period._value-4+'px',
 					'--color':period._id.length==24?'#EB3341':'#00BF00'
 				}
 			},
@@ -173,20 +173,20 @@
 	}
 	.divline {
 		width: 80%;
-		height: 0px;
-		margin: 2px 0;
-		border: 1px solid #CCCCCC;
+		height: 2px;
+		margin: 1px 0;
+		background-color: #666666;
 	}
 	.time{
-		height: 56px;
+		height: 36px;
 		margin: 0px 5%;
-		font: normal 16px/56px $body-font-family;
+		font: normal 16px/16px $body-font-family;
 	}
 	
 	.brick{
 		height: var(--height);
 		box-sizing: border-box;
-		margin: 6px 6%;
+		margin: 4px 6%;
 		border-radius: 10px;
 		background-color: var(--color);
 	}

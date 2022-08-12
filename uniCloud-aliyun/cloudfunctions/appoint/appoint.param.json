@@ -1,8 +1,0 @@
-// 本文件中的json内容将在云函数【运行】时作为参数传给云函数。
-// 配置教程参考：https://uniapp.dcloud.net.cn/uniCloud/quickstart?id=runparam
-{	uno:"62411b72ec3c440001a6d5d7",
-	eno:"62411df51bde640233c454ef",
-	day:"2022-03-29T04:00:00.000Z",
-	appoint:212,
-	detail:"我要预约"
-}

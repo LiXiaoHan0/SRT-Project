@@ -86,10 +86,23 @@
 					return new Promise((resolve,reject)=>{
 						db.collection('srt-appoint').add(formData).then(res=>{
 							uni.hideLoading()
-							uni.showToast({
-								icon: 'success',
-								title: '预约提交成功',
-								complete: uni.navigateBack({delta:2})
+							uni.requestSubscribeMessage({
+								tmplIds: ['565SlmswFgNuEezLZ1Mnd7z7-az6qJPr4ApIE8O-DS0'],
+								success(res){
+									if(res['565SlmswFgNuEezLZ1Mnd7z7-az6qJPr4ApIE8O-DS0']=='accept'){
+										// db.collection('uni-push-log').add(formData).then
+									}
+								},
+								complete(){
+									uni.navigateBack({
+										delta:2
+									}).then(
+										uni.showToast({
+											icon: 'success',
+											title: '预约提交成功'
+										})
+									)
+								}
 							})
 						}).catch(err=>{
 							reject(err)
@@ -111,7 +124,7 @@
 			console.log(e.eid)
 			this.appointData.eid=e.eid
 			this.appointData.date=detail[0]
-			for(let i=parseInt(detail[1]);i<=parseInt(detail[2]);i++){
+			for(let i=parseInt(detail[1]);i<=parseInt(detail[2]);i=i+2){
 				times.push({text:utils.numtoTime(i),value:i})
 			}
 			this.st_time=times.slice(0,-1)

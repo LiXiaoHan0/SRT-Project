@@ -1,0 +1,153 @@
+{
+	"bsonType": "object",
+	"required": [],
+	"permission": {
+		"read": false,
+		"create": true,
+		"update": false,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"operator_id": {
+			"label": "操作者id",
+			"description": "记录由哪个用户操作消息推送",
+			"foreignKey": "uni-id-users._id",
+			"forceDefaultValue": {
+				"$env": "uid"
+			}
+		},
+		"title": {
+			"label": "APP通知栏标题",
+			"bsonType": "string"
+		},
+		"content": {
+			"label": "APP通知栏内容",
+			"bsonType": "string"
+		},
+		"creat_time": {
+			"label": "创建推送时间",
+			"forceDefaultValue": {
+				"$env": "now"
+			},
+			"bsonType": "timestamp"
+		},
+		"audience_type": {
+			"label": "消息接受者类型",
+			"bsonType": "string",
+			"enum": [{
+				"text": "所有用户",
+				"value": "ALL"
+			}, {
+				"text": "用户id",
+				"value": "user_id"
+			}, {
+				"text": "用户标签",
+				"value": "user_tag"
+			}, {
+				"text": "设备id",
+				"value": "device_id"
+			}, {
+				"text": "个推客户端id",
+				"value": "push_clientid"
+			}, {
+				"text": "个推自定义客户端标签",
+				"value": "getui_custom_tag"
+			}]
+		},
+		"audience_value": {
+			"label": "目标用户标识",
+			"bsonType": "string"
+		},
+		"platform": {
+			"label": "目标平台",
+			"enum": [{
+				"text": "所有",
+				"value": "ALL"
+			}, {
+				"text": "网页端",
+				"value": "web"
+			}, {
+				"text": "App-iOS",
+				"value": "app-ios"
+			}, {
+				"text": "App-Android",
+				"value": "app-android"
+			}, {
+				"text": "微信小程序",
+				"value": "mp-weixin"
+			}, {
+				"text": "360小程序",
+				"value": "mp-360"
+			}, {
+				"text": "百度小程序",
+				"value": "mp-baidu"
+			}, {
+				"text": "支付宝小程序",
+				"value": "mp-alipay"
+			}, {
+				"text": "字节跳动小程序",
+				"value": "mp-toutiao"
+			}, {
+				"text": "QQ小程序",
+				"value": "mp-qq"
+			}, {
+				"text": "快应用联盟",
+				"value": "quickapp-webview-union"
+			}, {
+				"text": "快应用华为",
+				"value": "quickapp-webview-huawei"
+			}, {
+				"text": "快手小程序",
+				"value": "mp-kuaishou"
+			}, {
+				"text": "飞书小程序",
+				"value": "mp-lark"
+			}, {
+				"text": "京东小程序",
+				"value": "mp-jd"
+			}]
+		},
+		"state": {
+			"label": "推送状态"
+		},
+		"channel": {
+			"label": "渠道id"
+		},
+		"open_url": {
+			"label": "点击打开链接",
+			"format": "url"
+		},
+		"payload": {
+			"label": "消息内容"
+		},
+		"badge": {
+			"label": "角标值"
+		},
+		"sound": {
+			"label": "铃声文件名",
+			"bsonType": "string"
+		},
+		"content_available": {
+			"label": "消息类型（仅iOS支持）"
+		},
+		"appId": {
+			"label": "应用的id",
+			"bsonType": "string"
+		},
+		"taskid": {
+			"label": "任务id",
+			"bsonType": "string"
+		},
+		"options": {
+			"label": "其他参数",
+			"bsonType": "object"
+		},
+		"report": {
+			"bsonType": "object"
+		}
+	},
+	"version": "0.0.1"
+}
