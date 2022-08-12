@@ -1,9 +1,9 @@
 <template>
-	<uni-card :title="equip.name" :subTitle="'设备编号：'+equip.order" :extra="'地点：？？？'">
+	<uni-card :title="equip.name" :subTitle="'设备编号：'+equip.order" :extra="'清华大学李兆基科技大楼A305'">
 		<view v-for="(item,index) in mark" :key="index">{{item}}</view>
 	</uni-card>
 	<view v-show="periods.length" class="row-flex" style="padding:3%;margin-top:-20px;">
-		<view style="width:12%;">
+		<view style="width:9%;">
 			<view style="height:60px;"></view>
 			<view class="col-flex" v-for="t in 13" :key="t">
 				<view class="divline"></view>
@@ -11,7 +11,7 @@
 				<view v-if="t==13" class="divline"></view>
 			</view>
 		</view>
-		<view v-for="(day,i) in periods" :key="i" style="width:17%;margin:3px 0;">
+		<view v-for="(day,i) in periods" :key="i" style="width:13%;margin:3px 0;">
 			<view class="col-flex">
 				<view class="title">{{calWeek(i)}}</view>
 				<view :class="!i?'circle':'title'">{{calDay(i)}}</view>
@@ -58,16 +58,16 @@
 				// 时间常数
 				const t = new Date()
 				dates[0]=t.toISOString().slice(0, 10)
-				for(let i=1;i<5;i++){
+				for(let i=1;i<7;i++){
 					dates[i]=tomorrow(t)
 				}
 				// 数据库查询
 				const db = uniCloud.database();
-				db.collection('srt-appoint').where(`eid=="${this.equip.eid}" && date>="${dates[0]}" && date<="${dates[4]}"`).field('start,end,date').orderBy('date asc,start asc').get().then(({result})=>{
+				db.collection('srt-appoint').where(`eid=="${this.equip.eid}" && date>="${dates[0]}" && date<="${dates[6]}"`).field('start,end,date').orderBy('date asc,start asc').get().then(({result})=>{
 					console.log(result)
 					let j=0,begin=18
 					let {data}=result
-					let period=[[],[],[],[],[]]
+					let period=[[],[],[],[],[],[],[]]
 					// 数据处理
 					data.push({date:tomorrow(t),_id:''})
 					for(let i in data){
@@ -80,7 +80,7 @@
 							}
 							j=j+1;begin=18
 						}
-						if(j===5){break}
+						if(j===7){break}
 						if(data[i].start==begin){
 							period[j].push({
 								_value:data[i].end-data[i].start,
@@ -103,6 +103,7 @@
 					this.periods=period
 					uni.hideLoading()
 				}).catch(({result})=>{
+					console.log(result)
 					this.periods=[]
 					uni.hideLoading()
 					uni.showToast({
@@ -185,7 +186,7 @@
 	.brick{
 		height: var(--height);
 		box-sizing: border-box;
-		margin: 6px 8%;
+		margin: 6px 6%;
 		border-radius: 10px;
 		background-color: var(--color);
 	}

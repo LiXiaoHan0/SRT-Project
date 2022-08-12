@@ -3,7 +3,7 @@
 		<button class="avatar-wrapper" open-type="chooseAvatar" @chooseavatar="onChooseAvatar">
 			<image style="width: 80px;height: 80px;" :src="loginData.avatar"></image>
 		</button>
-		<uni-forms label-width="80" ref="infoForm" :modelValue="loginData" :rules="rules">
+		<uni-forms label-width="100" ref="infoForm" :modelValue="loginData" :rules="rules">
 			<uni-forms-item required label="姓名" name="nickname">
 				<uni-easyinput type="text" v-model="loginData.nickname" placeholder="请输入姓名" />
 			</uni-forms-item>
