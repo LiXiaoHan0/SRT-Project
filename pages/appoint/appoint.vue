@@ -84,24 +84,27 @@
 					console.log(formData)
 					const db = uniCloud.database();
 					return new Promise((resolve,reject)=>{
-						db.collection('srt-appoint').add(formData).then(res=>{
+						db.collection('srt-appoint').add(formData).then(({result})=>{
+							console.log(result)
 							uni.hideLoading()
 							uni.requestSubscribeMessage({
-								tmplIds: ['565SlmswFgNuEezLZ1Mnd7z7-az6qJPr4ApIE8O-DS0'],
+								tmplIds: ['565SlmswFgNuEezLZ1Mnd4UbHgL4cgwhpfSxaUlKciw'],
 								success(res){
-									if(res['565SlmswFgNuEezLZ1Mnd7z7-az6qJPr4ApIE8O-DS0']=='accept'){
-										// db.collection('uni-push-log').add(formData).then
+									console.log(res)
+									if(res['565SlmswFgNuEezLZ1Mnd4UbHgL4cgwhpfSxaUlKciw']=='accept'){
+										db.collection('srt-push').add({
+											aid:result.id,
+											date:formData.date,
+											time:formData.start-2
+										})
 									}
 								},
 								complete(){
-									uni.navigateBack({
-										delta:2
-									}).then(
-										uni.showToast({
-											icon: 'success',
-											title: '预约提交成功'
-										})
-									)
+									uni.showToast({
+										icon: 'success',
+										title: '预约提交成功',
+										complete:uni.navigateBack({delta:2})
+									})
 								}
 							})
 						}).catch(err=>{

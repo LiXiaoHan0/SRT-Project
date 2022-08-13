@@ -1,2 +1,5 @@
 # 忽略编译文件
 unpackage/
+
+# 忽略云端代码
+uniCloud-aliyun/
