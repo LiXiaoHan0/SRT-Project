@@ -92,11 +92,16 @@
 								success(res){
 									console.log(res)
 									if(res['565SlmswFgNuEezLZ1Mnd4UbHgL4cgwhpfSxaUlKciw']=='accept'){
-										db.collection('srt-push').add({
-											aid:result.id,
-											date:formData.date,
-											time:formData.start-2
-										})
+										const t=new Date()
+										// 提前预约45分钟以上才会收到提醒信息
+										if(formData.date!=t.toISOString().slice(0, 10) || formData.start-2*t.getHours()-t.getMinutes()/30>1.5){
+											db.collection('srt-push').add({
+												uid:uniCloud.getCurrentUserInfo().uid,
+												aid:result.id,
+												date:formData.date,
+												time:formData.start-2
+											})
+										}
 									}
 								},
 								complete(){
