@@ -1,0 +1,37 @@
+{
+	"bsonType": "object",
+	"required": ["name", "openid", "power", "url"],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "用户序号"
+		},
+		"openid": {
+			"description": "用户标识符",
+			"bsonType": "string"
+		},
+		"name": {
+			"description": "用户姓名",
+			"bsonType": "string"
+		},
+		"url": {
+			"description": "用户头像地址",
+			"bsonType": "string"
+		},
+		"power": {
+			"description": "用户权限",
+			"defaultValue": 0,
+			"bsonType": "int",
+			"enum": [0, 1, 2]
+		},
+		"phone": {
+			"description": "用户手机号码",
+			"bsonType": "string"
+		}
+	}
+}

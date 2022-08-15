@@ -1,0 +1,46 @@
+{
+	"bsonType": "object",
+	"required": ["uno", "eno", "appoint"],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": false,
+		"delete": "auth.uid==doc.uid"
+	},
+	"properties": {
+		"_id": {
+			"description": "预约ID，系统自动生成"
+		},
+		"uid": {
+			"description": "预约人ID",
+			"bsonType": "string",
+			"foreignKey": "uni-id-users._id"
+		},
+		"eid": {
+			"description": "设备ID",
+			"bsonType": "string",
+			"foreignKey": "srt-equip._id"
+		},
+		"date": {
+			"description": "预约日期",
+			"bsonType": "string",
+			"pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+		},
+		"start": {
+			"description": "开始时间",
+			"bsonType": "int"
+		},
+		"end": {
+			"description": "结束时间",
+			"bsonType": "int"
+		},
+		"title": {
+			"description": "课程or项目名称",
+			"bsonType": "string"
+		},
+		"teacher": {
+			"description": "任课教师or导师",
+			"bsonType": "string"
+		}
+	}
+}
