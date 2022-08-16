@@ -1,6 +1,7 @@
 <template>
 	<view class="uni-card" :class="{ 'uni-card--full': isFull, 'uni-card--shadow': isShadow,'uni-card--border':border}"
-		:style="{'margin':isFull?0:margin,'padding':spacing,'box-shadow':isShadow?shadow:''}">
+		:style="{'margin':isFull?0:margin,'padding':spacing,'box-shadow':isShadow?shadow:''}"
+		hover-class="uni-card-hover">
 		<!-- 封面 -->
 		<slot name="cover">
 			<view v-if="cover" class="uni-card__cover">
@@ -231,6 +232,10 @@
 		.uni-card__actions {
 			font-size: 12px;
 		}
+	}
+	
+	.uni-card-hover{
+		background-color: #EBEEF5;
 	}
 
 	.uni-card--border {

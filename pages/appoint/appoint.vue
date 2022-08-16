@@ -105,10 +105,12 @@
 									}
 								},
 								complete(){
-									uni.showToast({
-										icon: 'success',
-										title: '预约提交成功',
-										complete:uni.navigateBack({delta:2})
+									uni.navigateBack({
+										delta:2,
+										complete:uni.showToast({
+											icon: 'success',
+											title: '预约提交成功',
+										})
 									})
 								}
 							})

@@ -18,8 +18,9 @@
 				<uni-easyinput type="number" v-model="loginData.school_id" placeholder="请输入学号/工号" />
 			</uni-forms-item>
 		</uni-forms>
-		<view style="margin:30px;">
+		<view class="row-flex" style="margin:30px;justify-content:space-around;width:100%;">
 			<uni-button @click="submitForm">提交信息</uni-button>
+			<uni-button v-if="change" @click="exitAccount">退出登录</uni-button>
 		</view>
 	</view>
 </template>
@@ -35,6 +36,7 @@
 	export default {
 		data() {
 			return {
+				change:false,
 				loginData: {
 					nickname: '', // 姓名
 					avatar: defaultUrl, // 头像地址
@@ -98,7 +100,8 @@
 		},
 		methods: {
 			...mapMutations({
-				setUserInfo: 'user/login'
+				setUserInfo: 'user/login',
+				delUserInfo: 'user/logout'
 			}),
 			// 选择头像
 			onChooseAvatar({detail}) {
@@ -125,6 +128,13 @@
 					}
 				}).catch(err => {
 					console.log('校验错误', err)
+				})
+			},
+			// 退出登录
+			exitAccount(){
+				this.delUserInfo()
+				uni.reLaunch({
+					url:'/pages/index/index'
 				})
 			},
 			// 信息绑定
@@ -194,6 +204,7 @@
 			userId=e.uid
 			if(e.change=='true'){
 				let data=this.userInfo
+				this.change=true
 				this.loginData={
 					nickname: data.nickname,
 					avatar: data.avatar,
