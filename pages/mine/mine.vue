@@ -25,7 +25,7 @@
 				userData:[]
 			};
 		},
-		onLoad() {
+		onShow() {
 			this.role=uniCloud.getCurrentUserInfo().role[0]
 			this.refresh()
 		},
@@ -84,7 +84,7 @@
 			// 跳转至预约详细信息
 			goAppoint(id){
 				uni.navigateTo({
-					url:`../show/show?type=appoint&text=预约详细信息&id=${id}`
+					url:`../show/show?type=appoint&text=预约详细信息&id=${id}&cancel=1`
 				})
 			}
 		}

@@ -105,13 +105,12 @@
 									}
 								},
 								complete(){
-									uni.navigateBack({
-										delta:2,
-										complete:uni.showToast({
-											icon: 'success',
-											title: '预约提交成功',
-										})
+									uni.showToast({
+										icon: 'success',
+										title: '预约提交成功',
+										mask: true
 									})
+									setTimeout(uni.navigateBack,1500,{delta:2})
 								}
 							})
 						}).catch(err=>{

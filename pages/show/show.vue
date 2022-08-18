@@ -1,27 +1,54 @@
 <template>
-	<view>
-		<uni-list>
-			<uni-list-item v-for="item in detail"  :key="item[0]" :title="item[0]" :rightText="item[1]" />
-		</uni-list>
+	<uni-list>
+		<uni-list-item v-for="item in detail"  :key="item[0]" :title="item[0]" :rightText="item[1]" />
+	</uni-list>
+	<view style="margin:30px;">
+		<uni-button v-if="cancel" type="red" @click="cancelAppoint">取消预约</uni-button>
 	</view>
 </template>
 
 <script>
+	const db = uniCloud.database();
 	import utils from '../../common/utils.js'
 	export default {
 		data() {
 			return {
-				detail: []
+				detail: [],
+				cancel:false,
+				id:null
 			};
+		},
+		methods:{
+			// 取消预约
+			cancelAppoint(){
+				uni.showModal({
+					title: '提示',
+					content: '确定要取消预约吗？',
+					success: res=> {
+						if (res.confirm) {
+							console.log('确定取消预约');
+							uni.showLoading({mask:true})
+							db.collection('srt-appoint').doc(this.id).remove().then(()=>{
+								db.collection('srt-push').where(`aid=="${this.id}"`).remove().then(()=>{
+									uni.showToast({
+										icon: 'success',
+										title: '预约取消成功',
+										mask: true
+									})
+									setTimeout(uni.navigateBack,1500,{delta:1})
+								})
+							})
+						}
+					}
+				});
+			}
 		},
 		onLoad(e) {
 			uni.setNavigationBarTitle({
 				title: e.text
 			})
-			uni.showLoading({
-				mask: true
-			})
-			const db = uniCloud.database();
+			uni.showLoading({mask: true})
+			this.id=e.id
 			switch (e.type) {
 				case 'profile':
 					db.collection('uni-id-users').where(`_id=="${e.id}"`).field('nickname,mobile,school_id,statu').get().then(res=>{
@@ -61,6 +88,7 @@
 							['预约时间', utils.numtoTime(data.start) + '~' + utils.numtoTime(data.end)],
 							['预约设备',data.eid[0].name + ' ' + data.eid[0].order]
 						]
+						if(e.cancel) this.cancel=true
 						uni.hideLoading()
 					}).catch(err => {
 						console.log(err)
@@ -78,5 +106,7 @@
 </script>
 
 <style lang="scss" scoped>
-
+	.cancel{
+		margin: 10px 20px;
+	}
 </style>
