@@ -2,8 +2,8 @@
 	<uni-list>
 		<uni-list-item v-for="item in detail"  :key="item[0]" :title="item[0]" :rightText="item[1]" />
 	</uni-list>
-	<view style="margin:30px;">
-		<uni-button v-if="cancel" type="red" @click="cancelAppoint">取消预约</uni-button>
+	<view v-if="cancel" style="margin:30px;">
+		<uni-button type="red" @click="cancelAppoint">取消预约</uni-button>
 	</view>
 </template>
 
@@ -24,23 +24,28 @@
 				uni.showModal({
 					title: '提示',
 					content: '确定要取消预约吗？',
-					success: res=> {
-						if (res.confirm) {
-							console.log('确定取消预约');
-							uni.showLoading({mask:true})
-							db.collection('srt-appoint').doc(this.id).remove().then(()=>{
-								db.collection('srt-push').where(`aid=="${this.id}"`).remove().then(()=>{
-									uni.showToast({
-										icon: 'success',
-										title: '预约取消成功',
-										mask: true
-									})
-									setTimeout(uni.navigateBack,1500,{delta:1})
-								})
+				}).then(res=>{
+					if (res.confirm) {
+						console.log('确定取消预约');
+						uni.showLoading({mask:true})
+						uniCloud.callFunction({
+							name: 'cancel-msg',
+							data: {
+								item:[this.id],
+								log:'用户自主取消预约'
+							}
+						}).then(res=>{
+							console.log(res)
+							uni.hideLoading()
+							uni.showToast({
+								icon: 'success',
+								title: '预约取消成功',
+								mask: true
 							})
-						}
+							setTimeout(uni.navigateBack,1500,{delta:1})
+						})
 					}
-				});
+				})
 			}
 		},
 		onLoad(e) {

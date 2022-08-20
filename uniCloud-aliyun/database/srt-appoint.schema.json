@@ -41,6 +41,11 @@
 		"teacher": {
 			"description": "任课教师or导师",
 			"bsonType": "string"
+		},
+		"state": {
+			"description": "允许发送的推送类型",
+			"bsonType": "int",
+			"enum": [0, 1, 2, 3]
 		}
 	}
 }

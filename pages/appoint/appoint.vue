@@ -36,7 +36,8 @@
 					title:null,
 					teacher:null,
 					start:null,
-					end:null
+					end:null,
+					state:0,
 				},
 				rules: { // 校验设置
 					title: {
@@ -79,42 +80,33 @@
 			},
 			submitForm(){
 				uni.showLoading({mask:true})
-				this.$refs.infoForm.validate(['date','eid']).then(formData=>{
+				this.$refs.infoForm.validate(['date','eid','state']).then(formData=>{
 					formData.uid=uniCloud.getCurrentUserInfo().uid
 					console.log(formData)
 					const db = uniCloud.database();
 					return new Promise((resolve,reject)=>{
-						db.collection('srt-appoint').add(formData).then(({result})=>{
-							console.log(result)
-							uni.hideLoading()
-							uni.requestSubscribeMessage({
-								tmplIds: ['565SlmswFgNuEezLZ1Mnd4UbHgL4cgwhpfSxaUlKciw'],
-								success(res){
-									console.log(res)
-									if(res['565SlmswFgNuEezLZ1Mnd4UbHgL4cgwhpfSxaUlKciw']=='accept'){
-										const t=new Date()
-										// 提前预约45分钟以上才会收到提醒信息
-										if(formData.date!=t.toISOString().slice(0, 10) || formData.start-2*t.getHours()-t.getMinutes()/30>1.5){
-											db.collection('srt-push').add({
-												uid:uniCloud.getCurrentUserInfo().uid,
-												aid:result.id,
-												date:formData.date,
-												time:formData.start-2
-											})
-										}
-									}
-								},
-								complete(){
-									uni.showToast({
-										icon: 'success',
-										title: '预约提交成功',
-										mask: true
-									})
-									setTimeout(uni.navigateBack,1500,{delta:2})
-								}
+						uni.hideLoading()
+						uni.requestSubscribeMessage({
+							tmplIds: ['565SlmswFgNuEezLZ1Mnd4UbHgL4cgwhpfSxaUlKciw','2oavjREU4Kvy_hp3YYsRhkGpDgqkmleueBoFf9J358Q'],
+						}).then(res=>{
+							const t=new Date()
+							// 提前预约45分钟以上才会收到提醒信息
+							if(res['565SlmswFgNuEezLZ1Mnd4UbHgL4cgwhpfSxaUlKciw']=='accept' && (formData.date!=t.toISOString().slice(0, 10) || formData.start-2*t.getHours()-t.getMinutes()/30>1.5)){formData.state+=1}
+							// 接收预约取消通知
+							if(res['2oavjREU4Kvy_hp3YYsRhkGpDgqkmleueBoFf9J358Q']=='accept'){formData.state+=2}
+							// 提交预约信息
+							uni.showLoading({mask:true})
+							db.collection('srt-appoint').add(formData).then(()=>{
+								uni.hideLoading()
+								uni.showToast({
+									icon: 'success',
+									title: '预约提交成功',
+									mask: true
+								})
+								setTimeout(uni.navigateBack,1500,{delta:2})
+							}).catch(err=>{
+								reject(err)
 							})
-						}).catch(err=>{
-							reject(err)
 						})
 					})
 				}).catch(err => {
