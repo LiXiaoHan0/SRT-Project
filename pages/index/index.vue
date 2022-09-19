@@ -83,6 +83,20 @@
 		onPullDownRefresh(){
 			this.refreshEquip()
 		},
+		onShareAppMessage() { // 分享
+			return {
+				title:'机械系实验中心',
+				path: 'pages/index/index',
+				imageUrl: '/static/topic.jpg' // 分享封面图片
+			}
+		},
+		onShareTimeline() { // 转发朋友圈
+			return {
+				title:'机械系实验中心',
+				query: 'pages/index/index',
+				imageUrl: '/static/topic.jpg'
+			}
+		},
 		methods: {
 			...mapMutations({
 				setUserInfo: 'user/login',
