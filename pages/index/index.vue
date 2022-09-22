@@ -66,18 +66,7 @@
 		},
 		// 初始化加载
 		onLoad() {
-			let t=uniCloud.getCurrentUserInfo().tokenExpired
-			if(t<=Date.now()){
-				if(t>0){
-					this.delUserInfo()
-					uni.showToast({
-						icon: 'none',
-						title: "登录过期,请重新登录！"
-					})
-				}
-			} else{
-				this.refreshEquip()
-			}
+			this.refreshEquip()
 		},
 		// 下拉刷新
 		onPullDownRefresh(){
@@ -103,35 +92,46 @@
 				delUserInfo: 'user/logout'
 			}),
 			// 更新设备信息
-			refreshEquip(){
-				uni.showLoading({mask:true})
-				// 当前时间常数
-				const time=new Date()
-				const date=time.toISOString().slice(0,10)
-				const hour=(time.getHours()+parseInt(time.getMinutes()/60))<<1
-				// 数据库查询
-				const db = uniCloud.database();
-				const tmp=db.collection('srt-appoint').where(`date=="${date}" && start<=${hour} && end>${hour}`).field('eid,end').getTemp()
-				db.collection('srt-equip',tmp).orderBy('order asc').get().then(({result})=>{
-					console.log(result)
-					for(let i in result.data){
-						let t=result.data[i]
-						if(t._id['srt-appoint'].length){
-							t.state=(t._id['srt-appoint'][0].end-hour)/2
-						} else{
-							t.state=0
-						}
+			refreshEquip(msg){
+				let t=uniCloud.getCurrentUserInfo().tokenExpired
+				if(t<=Date.now()){
+					if(t>0){
+						this.delUserInfo()
+						uni.showToast({
+							icon: 'none',
+							title: '登录过期,请重新登录'
+						})
 					}
-					this.equips=result.data
-					uni.hideLoading()
-				}).catch(err=>{
-					console.log(err)
-					uni.hideLoading()
-					uni.showToast({
-						icon: 'error',
-						title: err.code=='TOKEN_INVALID_ANONYMOUS_USER'?'请先完成登录':'服务器请求失败'
+				} else{
+					uni.showLoading({mask:true})
+					// 当前时间常数
+					const time=new Date()
+					const date=time.toISOString().slice(0,10)
+					const hour=(time.getHours()+parseInt(time.getMinutes()/60))<<1
+					// 数据库查询
+					const db = uniCloud.database();
+					const tmp=db.collection('srt-appoint').where(`date=="${date}" && start<=${hour} && end>${hour}`).field('eid,end').getTemp()
+					db.collection('srt-equip',tmp).orderBy('order asc').get().then(({result})=>{
+						console.log(result)
+						for(let i in result.data){
+							let t=result.data[i]
+							if(t._id['srt-appoint'].length){
+								t.state=(t._id['srt-appoint'][0].end-hour)/2
+							} else{
+								t.state=0
+							}
+						}
+						this.equips=result.data
+						uni.hideLoading()
+					}).catch(err=>{
+						console.log(err)
+						uni.hideLoading()
+						uni.showToast({
+							icon: 'error',
+							title: err.code=='TOKEN_INVALID_ANONYMOUS_USER'?'请先完成登录':'服务器请求失败'
+						})
 					})
-				})
+				}
 			},
 			// 更新用户信息
 			refreshUser(text){
