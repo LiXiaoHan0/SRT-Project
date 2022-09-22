@@ -32,7 +32,7 @@
 	} from 'vuex';
 	let userId = null
 	const defaultUrl = '../../static/grey.jpg'
-	const CloudUrl = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-340aeb7f-4bf8-464b-ba11-8d1b8bc075d5/518ca3c0-e0f6-4513-9b26-da31091427f3.jpg'
+	const CloudUrl = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-340aeb7f-4bf8-464b-ba11-8d1b8bc075d5/5a416824-56c7-4529-9a10-4bb280313dcc.jpg'
 	export default {
 		data() {
 			return {

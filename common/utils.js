@@ -17,6 +17,7 @@ const formatNumber = n => {
 	
 // 时间戳转通用时间
 const changeTime= stamp=> {
+	if(typeof(stamp)=='undefined') return '无法确定'
 	let now = new Date();
 	let diff = parseInt((now.getTime() - stamp) / 1000)
 	if (diff < 60) {
