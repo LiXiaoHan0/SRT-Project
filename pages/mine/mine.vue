@@ -17,10 +17,16 @@
 					<uni-list-item v-for="item in adminData[i].data" :key="item._id" 
 					:title="item.nickname" :note="'最后登陆时间：'+changeTime(item.last_login_date)" 
 					:thumb="item.avatar" thumb-size="lg" rightText="详细信息" 
-					showArrow clickable @click="goProfile(item._id)" />
+					showArrow clickable @click="goProfile(item._id,i)" />
 				</uni-list>
 			</uni-collapse-item>
 		</uni-collapse>
+		<view class="nominee">
+			<uni-button @click="goSearch">
+				<uni-icons type="plusempty" color="#fff"/>
+				<text> 设置新的管理员</text>
+			</uni-button>			
+		</view>
 	</view>
 </template>
 
@@ -80,7 +86,7 @@
 			// 刷新用户数据
 			refreshUserData(){
 				uni.showLoading({mask:true})
-				db.collection('uni-id-users').where(`date>="${new Date().toISOString().slice(0, 10)}" && uid=="${uniCloud.getCurrentUserInfo().uid}"`).field('title,start,end,date').get().then(({result})=>{
+				db.collection('srt-appoint').where(`date>="${new Date().toISOString().slice(0, 10)}" && uid=="${uniCloud.getCurrentUserInfo().uid}"`).field('title,start,end,date').get().then(({result})=>{
 					console.log(result)
 					this.userData=result.data
 					uni.hideLoading()
@@ -100,8 +106,8 @@
 			// 刷新超级管理员数据
 			refreshAdminData(){
 				uni.showLoading({mask:true})
-				const getAudit = db.collection('uni-id-users').where('in("admin",role)').field('nickname,avatar,last_login_date').getTemp()
-				const getAdmin = db.collection('uni-id-users').where('in("AUDITOR",role)').field('nickname,avatar,last_login_date').getTemp()
+				const getAudit = db.collection('uni-id-users').where('role[0]=="admin"').field('nickname,avatar,last_login_date').getTemp()
+				const getAdmin = db.collection('uni-id-users').where('role[0]=="AUDITOR"').field('nickname,avatar,last_login_date').getTemp()
 				db.multiSend(getAudit,getAdmin).then(({result})=>{
 					console.log(result)
 					this.adminData=result.dataList
@@ -118,13 +124,19 @@
 			// 跳转至预约详细信息
 			goAppoint(id){
 				uni.navigateTo({
-					url:`../show/show?type=appoint&text=预约详细信息&id=${id}&cancel=1`
+					url:`../show/show?type=appoint&text=预约详细信息&id=${id}&item=取消预约`
 				})
 			},
 			// 跳转至个人详细信息
-			goProfile(id){
+			goProfile(id,t){
 				uni.navigateTo({
-					url:`../show/show?type=profile&text=个人详细信息&id=${id}`
+					url:`../show/show?type=profile&text=用户详细信息&id=${id}`+(t==0?'':'&item=解除权限')
+				})
+			},
+			// 跳转至管理员设置
+			goSearch(){
+				uni.navigateTo({
+					url:'../search/search'
 				})
 			},
 			// 时间处理函数
@@ -135,6 +147,9 @@
 	}
 </script>
 
-<style lang="scss">
-
+<style lang="scss" scoped>
+	.nominee{
+		color: #fff;
+		margin: 30px 60px;
+	}
 </style>

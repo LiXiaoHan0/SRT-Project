@@ -26,12 +26,12 @@ const changeTime= stamp=> {
 		return parseInt(diff / 60) + '分钟前'
 	} else if (diff < 86400) {
 		return parseInt(diff / 3600) + '小时前'
-	} else if (diff < 259200) {
+	} else if (diff < 2592000) {
 		return parseInt(diff / 86400) + '天前'
-	} else if (diff < 378432000) {
-		return parseInt(diff / 259200) + '月前'
+	} else if (diff < 31536000) {
+		return parseInt(diff / 2592000) + '月前'
 	} else {
-		return parseInt(diff / 378432000) + '年前'
+		return parseInt(diff / 31536000) + '年前'
 	}
 }
 

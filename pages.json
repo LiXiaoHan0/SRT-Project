@@ -6,13 +6,8 @@
     		"path": "pages/login/login", //启动页面，必选
     		"query": "" //启动参数，在页面的onLoad函数里面得到
     	},{
-    		"name": "equip", //模式名称
-    		"path": "pages/equip/equip", //启动页面，必选
-    		"query": "eid=62d823a5f17d020001b94f00" //启动参数，在页面的onLoad函数里面得到
-    	},{
-    		"name": "show", //模式名称
-    		"path": "pages/show/show", //启动页面，必选
-    		"query": "type=profile&text=用户详细信息&id=62e0d8958c195b0001942e0e" //启动参数，在页面的onLoad函数里面得到
+    		"name": "search", //模式名称
+    		"path": "pages/search/search" //启动页面，必选
     	}]
     },
 	"pages" : [
@@ -46,6 +41,13 @@
         },{
             "path" : "pages/show/show",
             "style" :{
+                "enablePullDownRefresh": false
+            }
+        },{
+            "path" : "pages/search/search",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "查找用户",
                 "enablePullDownRefresh": false
             }
         }
