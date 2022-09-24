@@ -109,10 +109,10 @@
 						let data = res.result.data[0]
 						this.detail = [
 							['课程/项目名称', data.title],
-							['导师/任课教师', data.teacher],
-							['预约人姓名', data.uid[0].nickname],
-							['预约人电话', data.uid[0].mobile],
-							['预约人学号/工号', data.uid[0].school_id],
+							['指导教师姓名', data.teacher],
+							['预约用户姓名', data.uid[0].nickname],
+							['预约用户电话', data.uid[0].mobile],
+							['预约用户学/工号', data.uid[0].school_id || '校外用户'],
 							['预约日期',data.date],
 							['预约时间', utils.numtoTime(data.start) + '~' + utils.numtoTime(data.end)],
 							['预约设备',data.eid[0].name + ' ' + data.eid[0].order]

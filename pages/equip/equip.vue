@@ -24,6 +24,7 @@
 <script>
 	const dates=[]
 	const tomorrow= day=>{return new Date(day.setDate(day.getDate() + 1)).toISOString().slice(0, 10)}
+	import utils from '../../common/utils'
 	export default {
 		data() {
 			return {
@@ -102,14 +103,9 @@
 					console.log(period)
 					this.periods=period
 					uni.hideLoading()
-				}).catch(({result})=>{
-					console.log(result)
+				}).catch(err=>{
 					this.periods=[]
-					uni.hideLoading()
-					uni.showToast({
-						icon: 'error',
-						title: '服务器请求失败'
-					})
+					utils.errReport(err)
 				})
 			},
 			// 前往预约界面
@@ -167,15 +163,15 @@
 		@extend .title;
 		width: 30px;
 		height: 30px;
-		color: #FFFFFF;
+		color: #fff;
 		border-radius: 50%;
-		background-color: #666666;
+		background-color: $grey2;
 	}
 	.divline {
 		width: 80%;
 		height: 2px;
 		margin: 1px 0;
-		background-color: #666666;
+		background-color: $grey2;
 	}
 	.time{
 		height: 36px;

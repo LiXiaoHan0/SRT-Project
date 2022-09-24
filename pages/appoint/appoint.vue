@@ -110,12 +110,7 @@
 						})
 					})
 				}).catch(err => {
-					console.log(err)
-					uni.hideLoading()
-					uni.showToast({
-						icon: 'error',
-						title: '服务器请求失败'
-					})
+					utils.errReport(err)
 				})
 			}
 		},

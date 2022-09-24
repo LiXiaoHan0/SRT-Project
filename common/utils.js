@@ -3,11 +3,12 @@ const formatTime = date => {
 	const year = date.getFullYear()
 	const month = date.getMonth() + 1
 	const day = date.getDate()
-	const hour = date.getHours()
-	const minute = date.getMinutes()
-	const second = date.getSeconds()
+	// const hour = date.getHours()
+	// const minute = date.getMinutes()
+	// const second = date.getSeconds()
 	
-	return [year, month, day].map(formatNumber).join('-') + ' ' + [hour, minute, second].map(formatNumber).join(':')
+	// return [year, month, day].map(formatNumber).join('-') + ' ' + [hour, minute, second].map(formatNumber).join(':')
+	return [year, month, day].map(formatNumber).join('-')
 }
 	
 const formatNumber = n => {
@@ -44,9 +45,21 @@ const numtoTime = t => {
 		return (h <= 9 ? '0' : '') + h + ':00'
 	}
 }
-	
+
+// 通用报错模板
+const errReport= err=>{
+	console.log(err)
+	uni.hideLoading()
+	uni.showToast({
+		icon: 'error',
+		title: '服务器请求错误'
+	})
+}
+
 export default {
+	formatNumber,
 	formatTime,
 	changeTime,
-	numtoTime
+	numtoTime,
+	errReport
 }

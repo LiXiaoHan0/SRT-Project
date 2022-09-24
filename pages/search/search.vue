@@ -11,6 +11,7 @@
 		:thumb="item.avatar" thumb-size="lg" rightText="详细信息" 
 		showArrow clickable @click="goProfile(item._id)" />
 	</uni-list>
+	<view v-if="status" class="col-flex no-more">没有更多数据了</view>
 </template>
 
 <script>
@@ -19,6 +20,7 @@
 	export default {
 		data() {
 			return {
+				status:false,
 				searchValue:'',
 				searchData:[]
 			};
@@ -30,18 +32,15 @@
 				db.collection('uni-id-users').where(`${new RegExp('.*'+e.value+'.*')}.test(nickname) && role[0]=="USER"`).field('nickname,avatar,last_login_date').get().then(({result})=>{
 					console.log(result)
 					this.searchData=result.data
+					this.status=true
 					uni.hideLoading()
 				}).catch(err => {
-					console.log(err)
-					uni.hideLoading()
-					uni.showToast({
-						icon: 'error',
-						title: '服务器请求错误'
-					})
+					utils.errReport(err)
 				})
 			},
 			// 取消搜索内容
 			clearSearch(){
+				this.status=false
 				this.searchValue=''
 				this.searchData=[]
 			},
@@ -58,7 +57,7 @@
 	}
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 	.topbar{
 		padding: 2px 10px;
 		background-color:#fff;

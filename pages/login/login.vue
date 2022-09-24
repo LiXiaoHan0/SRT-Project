@@ -226,6 +226,6 @@
 		height: 86px;
 		margin: 20px 0;
 		border-radius: 50%;
-		border: #ab6db4 solid 3px;
+		border: $tsinghua3 solid 3px;
 	}
 </style>

@@ -35,4 +35,11 @@
 	.col-flex {
 		@include flexbox(column)
 	}
+	
+	// 数据显示完成提示
+	.no-more{
+		color:$grey2;
+		padding:5px 0 15px;
+		font: lighter 12px/14px $body-font-family;
+	}
 </style>

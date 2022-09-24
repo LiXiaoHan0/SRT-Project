@@ -69,9 +69,7 @@
 		}
 	}
 </script>
-<style lang="scss" >
-	$uni-primary: #2979ff !default;
-	
+<style lang="scss" scoped>
 	.uni-section {
 		background-color: #fff;
 		// overflow: hidden;
@@ -96,8 +94,8 @@
 	}
 
 	.line {
-		height: 12px;
-		background-color: $uni-primary;
+		height: 16px;
+		background-color: #ab6db4;
 		border-radius: 10px;
 		width: 4px;
 	}
@@ -109,7 +107,7 @@
 		border-top-left-radius: 50px;
 		border-bottom-left-radius: 50px;
 		border-bottom-right-radius: 50px;
-		background-color: $uni-primary;
+		background-color: #ab6db4;
 	}
 
 	.uni-section__content {
@@ -122,8 +120,9 @@
 	}
 
 	.uni-section__content-title {
-		font-size: 14px;
-		color: $uni-primary;
+		font-size: 18px;
+		font-weight: bold;
+		color: #660874;
 	}
 
 	.distraction {

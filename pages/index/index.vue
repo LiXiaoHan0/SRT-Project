@@ -15,13 +15,13 @@
 		</uni-button>
 	</view>
 	<!-- 设备信息 -->
-	<view class="row-flex" style="flex-wrap:wrap;">
-		<view v-for="equip in equips" :key="equip._id._value" class="equip">
-			<uni-card :title="equip.name" :sub-title="'设备编号：'+equip.order" @click="goAppoint(equip)">
-				<text>状态： </text>
-				<uni-tag :circle="true" :text="equip.state?'使用中':'空闲中'" :type="equip.state?'error':'success'"/>
-			</uni-card>
-		</view>
+	<view class="row-flex" style="flex-wrap:wrap;padding: 5px;">
+		<uni-card v-for="equip in equips" :key="equip._id._value" 
+		 class="equip" :title="equip.name" :sub-title="'设备编号：'+equip.order" 
+		 margin="8px" @click="goAppoint(equip)">
+			<text>状态： </text>
+			<uni-tag :circle="true" :text="equip.state?'使用中':'空闲中'" :type="equip.state?'error':'success'"/>
+		</uni-card>
 	</view>
 </template>
 
@@ -30,6 +30,7 @@
 		mapMutations,
 		mapGetters
 	} from 'vuex';
+	import utils from '../../common/utils';
 	export default {
 		data() {
 			return {
@@ -201,12 +202,7 @@
 			// 点击身份刷新
 			goIdentity(){
 				this.refreshUser('更新成功').catch(err =>{
-					console.log(err)
-					uni.hideLoading()
-					uni.showToast({
-						icon: 'error',
-						title: '服务器请求失败'
-					})
+					utils.errReport(err)
 				})
 			},
 			// 点击预约设备
@@ -261,14 +257,14 @@
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
-		background-color: #ffffff;
+		background-color: #fff;
 		border-radius: 0 15px 15px 0;
 	}
 	
 	// 设备信息栏
 	.equip{
 		width: 50%;
-		min-width: 180px;
+		min-width: 175px;
 		max-width: 360px;
 	}
 </style>

@@ -9,7 +9,7 @@
 			</view>
 		</slot>
 		<slot name="title">
-			<view v-if="title || extra" class="uni-card__header">
+			<view v-if="title || extra" class="uni-card__header uni-card-back">
 				<!-- 卡片标题 -->
 				<view class="uni-card__header-box" @click="onClick('title')">
 					<view v-if="thumbnail" class="uni-card__header-avatar">
@@ -110,6 +110,13 @@
 				default: true
 			}
 		},
+		computed:{
+			url(){
+				return {
+					'--url':'../../static/grey.jpg'
+				}
+			}
+		},
 		methods: {
 			onClick(type) {
 				this.$emit('click', type)
@@ -137,7 +144,7 @@
 	.uni-card {
 		margin: $uni-card-spacing;
 		padding: 0 $uni-spacing-sm;
-		border-radius: 4px;
+		border-radius: 12px;
 		overflow: hidden;
 		font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, SimSun, sans-serif;
 		background-color: #fff;
@@ -235,7 +242,7 @@
 	}
 	
 	.uni-card-hover{
-		background-color: #EBEEF5;
+		background-color: #f8f8f8;
 	}
 
 	.uni-card--border {
