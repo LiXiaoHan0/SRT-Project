@@ -146,6 +146,8 @@
 				name:e.name,
 				order:e.order
 			} 
+		},
+		onShow() {
 			this.refreshState()
 		},
 		onPullDownRefresh(){
@@ -171,6 +173,7 @@
 		width: 80%;
 		height: 2px;
 		margin: 1px 0;
+		border-radius: 1px;
 		background-color: $grey2;
 	}
 	.time{

@@ -2,7 +2,7 @@
 	<view class="topbar">
 		<uni-search-bar radius="5" placeholder="请输入用户姓名" 
 		 clearButton="auto" cancelButton="none" :maxlength="10"
-		 v-model="searchValue" focus 
+		 v-model="searchValue" focus @focus="changeSearch"
 		 @confirm="comfirmSearch" @cancel="clearSearch" @clear="clearSearch" />
 	</view>
 	<uni-list>
@@ -25,23 +25,42 @@
 				searchData:[]
 			};
 		},
+		onShow() {
+			if(this.searchValue){
+				this.comfirmSearch()
+			}
+		},
 		methods:{
 			// 确认进行搜索
-			comfirmSearch(e){
+			comfirmSearch(){
 				uni.showLoading({mask:true})
-				db.collection('uni-id-users').where(`${new RegExp('.*'+e.value+'.*')}.test(nickname) && role[0]=="USER"`).field('nickname,avatar,last_login_date').get().then(({result})=>{
-					console.log(result)
-					this.searchData=result.data
-					this.status=true
-					uni.hideLoading()
-				}).catch(err => {
-					utils.errReport(err)
-				})
+				let value=this.searchValue
+				if(value){
+					db.collection('uni-id-users').where(`${new RegExp('.*'+value+'.*')}.test(nickname) && role[0]=="USER"`).field('nickname,avatar,last_login_date').get().then(({result})=>{
+						console.log(result)
+						this.searchData=result.data
+						this.status=true
+						uni.hideLoading()
+					}).catch(err => {
+						utils.errReport(err)
+					})
+				} else{
+					uni.showToast({
+						icon:'error',
+						title:'搜索值不能为空',
+						mask:true
+					})
+				}
 			},
 			// 取消搜索内容
 			clearSearch(){
 				this.status=false
 				this.searchValue=''
+				this.searchData=[]
+			},
+			// 修改搜索内容
+			changeSearch(){
+				this.status=false
 				this.searchData=[]
 			},
 			goProfile(id){

@@ -96,17 +96,54 @@
 							if(res['2oavjREU4Kvy_hp3YYsRhkGpDgqkmleueBoFf9J358Q']=='accept'){formData.state+=2}
 							// 提交预约信息
 							uni.showLoading({mask:true})
-							db.collection('srt-appoint').add(formData).then(()=>{
-								uni.hideLoading()
-								uni.showToast({
-									icon: 'success',
-									title: '预约提交成功',
-									mask: true
-								})
-								setTimeout(uni.navigateBack,1500,{delta:2})
-							}).catch(err=>{
-								reject(err)
+							let now=new Date()
+							return uniCloud.callFunction({
+								name:'check-time',
+								data:{
+									value:formData,
+									time:{
+										today:now.toISOString().slice(0,10),
+										hour:(now.getHours()<<1)+parseInt(now.getMinutes()/30)
+									}
+								}
 							})
+						}).then(({result})=>{
+							console.log(result)
+							uni.hideLoading()
+							switch (result){
+								case 100:
+									uni.showToast({
+										icon: 'success',
+										title: '预约提交成功',
+										mask: true
+									})
+									setTimeout(uni.navigateBack,1500,{delta:2})
+									break;
+								case 101:
+									uni.showToast({
+										icon: 'error',
+										title: '包含过去时间段',
+										mask: true
+									})
+									break;
+								case 102:
+									uni.showToast({
+										icon: 'error',
+										title: '预约时间冲突',
+										mask: true
+									})
+									setTimeout(uni.navigateBack,1500,{delta:1})
+									break;
+								default:
+									uni.showToast({
+										icon: 'error',
+										title: '服务器请求错误',
+										mask: true
+									})
+							}
+							
+						}).catch(err=>{
+								reject(err)
 						})
 					})
 				}).catch(err => {

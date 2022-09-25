@@ -137,13 +137,10 @@
 			// 更新用户信息
 			refreshUser(text){
 				return new Promise((resolve,reject)=>{
-					uni.showLoading({
-						mask: true
-					}).then(() => {
-						return uni.login({
-							"provider": "weixin",
-							"onlyAuthorize": true
-						})
+					uni.showLoading({mask: true})
+					uni.login({
+						"provider": "weixin",
+						"onlyAuthorize": true
 					}).then(res => { // 获取uniID
 						console.log(res)
 						return uniCloud.callFunction({
@@ -153,9 +150,7 @@
 								params: res.code
 							}
 						})
-					}).then(({
-						result
-					}) => {
+					}).then(({result}) => {
 						//保存用户信息
 						result.userInfo.uid = result.uid
 						delete result.userInfo.token
@@ -191,11 +186,7 @@
 						}
 						this.refreshEquip()
 					}).catch(err => {
-						console.log(err)
-						uni.showToast({
-							icon: 'error',
-							title: '服务器请求失败'
-						})
+						utils.errReport(err)
 					})
 				}
 			},

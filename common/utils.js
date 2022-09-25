@@ -52,7 +52,8 @@ const errReport= err=>{
 	uni.hideLoading()
 	uni.showToast({
 		icon: 'error',
-		title: '服务器请求错误'
+		title: '服务器请求错误',
+		mask: true
 	})
 }
 

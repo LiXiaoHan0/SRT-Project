@@ -4,6 +4,7 @@
 		<uni-card v-for="item in userData" :key="item._id" :title="item.title" :extra="'点击查看详情'" @click="goAppoint(item._id)">
 			<text>预约日期：{{item.date}}\n预约时间：{{realTime(item)}}\n预约地点：清华大学李兆基科技大楼A305</text>
 		</uni-card>
+		<view class="col-flex no-more">没有更多数据了</view>
 	</view>
 	<!-- 权限为管理员 -->
 	<view v-else-if="role=='AUDITOR'" style="padding-top:100px;">
@@ -49,11 +50,14 @@
 
 <script>
 	const db = uniCloud.database()
+	import {
+		mapGetters
+	} from 'vuex';
 	import utils from '../../common/utils.js'
 	export default {
 		data() {
 			return {
-				role:'none',
+				role:null,
 				// 用户数据
 				userData:[],
 				// 管理员数据
@@ -67,6 +71,9 @@
 			};
 		},
 		computed:{
+			...mapGetters({
+				userInfo: 'user/info'
+			}),
 			auditBar(){
 				let data=this.auditData
 				let ans='暂无',now=new Date()
@@ -83,20 +90,12 @@
 			}
 		},
 		onShow() {
-			let tmp=uniCloud.getCurrentUserInfo().role[0]
+			let tmp=this.userInfo.role[0]
 			if(tmp) this.role=tmp
 			this.refresh()
 		},
 		onPullDownRefresh() {
 			this.refresh()
-		},
-		onTabItemTap(){
-			if(this.role=='none'){
-				uni.showToast({
-					icon:'error',
-					title:'请先完成登录'
-				})
-			}
 		},
 		methods:{
 			refresh(){
@@ -112,7 +111,10 @@
 						this.refreshAdminData()
 						break
 					default:
-						break
+						uni.showToast({
+							icon:'error',
+							title:'请先完成登录'
+						})
 				}
 			},
 			// 刷新用户数据

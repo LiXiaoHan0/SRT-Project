@@ -50,6 +50,13 @@
                 "navigationBarTitleText": "查找用户",
                 "enablePullDownRefresh": false
             }
+        },{
+            "path" : "pages/test/test",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "调试控制台",
+                "enablePullDownRefresh": false
+            }   
         }
     ],
     "globalStyle" : {
@@ -75,6 +82,11 @@
                 "iconPath" : "static/tabbar/me.png",
                 "selectedIconPath" : "static/tabbar/me_active.png",
                 "text" : "我的"
+            },{
+                "pagePath" : "pages/test/test",
+                "iconPath" : "static/tabbar/test.png",
+                "selectedIconPath" : "static/tabbar/test_active.png",
+                "text" : "测试"
             }
         ]
     }

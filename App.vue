@@ -40,6 +40,6 @@
 	.no-more{
 		color:$grey2;
 		padding:5px 0 15px;
-		font: lighter 12px/14px $body-font-family;
+		font: 300 12px/14px $body-font-family;
 	}
 </style>
