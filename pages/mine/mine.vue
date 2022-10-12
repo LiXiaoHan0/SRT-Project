@@ -64,7 +64,7 @@
 				auditData:[],
 				title:'今日',
 				message:[],
-				today:utils.formatTime(new Date),
+				today:utils.formatTime(new Date()),
 				dateInfo:{start:'',end:''},
 				// 超级管理员数据
 				adminData:[{data:[]},{data:[]}]
@@ -120,7 +120,7 @@
 			// 刷新用户数据
 			refreshUserData(){
 				uni.showLoading({mask:true})
-				db.collection('srt-appoint').where(`date>="${new Date().toISOString().slice(0, 10)}" && uid=="${uniCloud.getCurrentUserInfo().uid}"`).field('title,start,end,date').get().then(({result})=>{
+				db.collection('srt-appoint').where(`date>="${utils.formatTime(new Date())}" && uid=="${uniCloud.getCurrentUserInfo().uid}"`).field('title,start,end,date').get().then(({result})=>{
 					console.log(result)
 					this.userData=result.data
 					uni.hideLoading()
@@ -131,6 +131,11 @@
 			// 刷新管理员数据
 			refreshAuditData(){
 				uni.showLoading({mask:true})
+				let now=new Date()
+				this.dateInfo={
+					start:utils.formatTime(now),
+					end:utils.formatTime(new Date(now.setDate(now.getDate()+6)))
+				}
 				const tmp1=db.collection('srt-appoint').where(`date=="${this.today}"`).field('title,start,end,uid,teacher').getTemp()
 				const tmp2=db.collection('uni-id-users').field('_id,nickname').getTemp()
 				db.collection(tmp1,tmp2).orderBy('start asc,end asc').get().then(({result})=>{
@@ -182,9 +187,6 @@
 			// 日历相关函数
 			openCalendar(){
 				uni.showLoading({mask:true})
-				let day=new Date
-				this.dateInfo.start=utils.formatTime(day)
-				this.dateInfo.end=utils.formatTime(new Date(day.setDate(day.getDate()+6)))
 				db.collection('srt-appoint').where(`date>="${this.dateInfo.start}" && date<="${this.dateInfo.end}"`).groupBy('date').groupField('count(*) as sum').orderBy('date asc').get().then(({result})=>{
 					console.log(result)
 					this.message=result.data.map(item=>{

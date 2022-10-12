@@ -106,9 +106,9 @@
 				} else{
 					uni.showLoading({mask:true})
 					// 当前时间常数
-					const time=new Date()
-					const date=time.toISOString().slice(0,10)
-					const hour=(time.getHours()+parseInt(time.getMinutes()/60))<<1
+					const now=new Date()
+					const date=utils.formatTime(now)
+					const hour=(now.getHours()+parseInt(now.getMinutes()/60))<<1
 					// 数据库查询
 					const db = uniCloud.database();
 					const tmp=db.collection('srt-appoint').where(`date=="${date}" && start<=${hour} && end>${hour}`).field('eid,end').getTemp()

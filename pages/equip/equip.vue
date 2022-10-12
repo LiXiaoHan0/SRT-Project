@@ -22,9 +22,9 @@
 </template>
 
 <script>
-	const dates=[]
-	const tomorrow= day=>{return new Date(day.setDate(day.getDate() + 1)).toISOString().slice(0, 10)}
 	import utils from '../../common/utils'
+	const dates=[]
+	const tomorrow= day=>{return utils.formatTime(new Date(day.setDate(day.getDate() + 1)))}
 	export default {
 		data() {
 			return {
@@ -57,10 +57,10 @@
 			refreshState(){
 				uni.showLoading({mask:true})
 				// 时间常数
-				const t = new Date()
-				dates[0]=t.toISOString().slice(0, 10)
+				const now = new Date()
+				dates[0]=utils.formatTime(now)
 				for(let i=1;i<7;i++){
-					dates[i]=tomorrow(t)
+					dates[i]=tomorrow(now)
 				}
 				// 数据库查询
 				const db = uniCloud.database();
@@ -70,7 +70,7 @@
 					let {data}=result
 					let period=[[],[],[],[],[],[],[]]
 					// 数据处理
-					data.push({date:tomorrow(t),_id:''})
+					data.push({date:tomorrow(now),_id:''})
 					for(let i in data){
 						while(data[i].date>dates[j]){
 							if(44-begin){
