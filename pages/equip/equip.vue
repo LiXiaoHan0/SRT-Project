@@ -41,9 +41,14 @@
 		methods: {
 			// 参数处理
 			calHeight(period){
+				let color={
+					24:'#EB3341',
+					16:'#00BF00',
+					10:'#CCCCCC'
+				}
 				return {
 					'--height':20*period._value-4+'px',
-					'--color':period._id.length==24?'#EB3341':'#00BF00'
+					'--color':color[period._id.length]
 				}
 			},
 			calDay(i){
@@ -64,16 +69,28 @@
 				}
 				// 数据库查询
 				const db = uniCloud.database();
-				db.collection('srt-appoint').where(`eid=="${this.equip.eid}" && date>="${dates[0]}" && date<="${dates[6]}"`).field('start,end,date').orderBy('date asc,start asc').get().then(({result})=>{
-					console.log(result)
-					let j=0,begin=18
-					let {data}=result
+				const tmp1=db.collection('srt-appoint').where(`eid=="${this.equip.eid}" && date>="${dates[0]}" && date<="${dates[6]}"`).field('start,end,date').orderBy('date asc,start asc').getTemp()
+				const tmp2=db.collection('srt-occupy').where(`eid=="${this.equip.eid}" && end>="${dates[0]}" && start<="${dates[6]}"`).field('start,end').orderBy('start asc').getTemp()
+				db.multiSend(tmp1,tmp2).then(({result})=>{
+					// console.log(result)
+					let j=0,k=0,begin=18,occupy=0
+					let {data}=result.dataList[0]
+					let {data:data0}=result.dataList[1]
 					let period=[[],[],[],[],[],[],[]]
 					// 数据处理
+					for(let i in data0){
+						while(data0[i].start>dates[k]) ++k
+						while(dates[k]<=data0[i].end&&k<7) occupy+=1<<k++
+					}
 					data.push({date:tomorrow(now),_id:''})
 					for(let i in data){
 						while(data[i].date>dates[j]){
-							if(44-begin){
+							if(occupy&1<<j){
+								period[j].push({
+									_value:26,
+									_id:dates[j]
+								})
+							}else if(begin<44){
 								period[j].push({
 									_value:44-begin,
 									_id:dates[j]+`/${begin}/44`
@@ -116,26 +133,42 @@
 						icon: 'none'
 					})
 				}else if(this.userInfo.role.includes('USER')){
-					if(id.length==24){
-						uni.showToast({
-							title:'该时间段已被预约',
-							icon: 'none'
-						})
-					}else {
-						uni.navigateTo({
-							url:`../appoint/appoint?eid=${this.equip.eid}&detail=${id}`
-						})
+					switch(id.length){
+						case 24:
+							uni.showToast({
+								title:'该时间段已被预约',
+								icon: 'none'
+							})
+							break;
+						case 16:
+							uni.navigateTo({
+								url:`../appoint/appoint?eid=${this.equip.eid}&detail=${id}`
+							})							
+							break;
+						default:
+							uni.showToast({
+								title:'该时间段设备不开放预约',
+								icon: 'none'
+							})
 					}
 				}else{
-					if(id.length==24){
-						uni.navigateTo({
-							url:`../show/show?type=appoint&text=预约详细信息&id=${id}`
-						})
-					}else {
-						uni.showToast({
-							title:'管理员无法进行预约',
-							icon: 'none'
-						})
+					switch(id.length){
+						case 24:
+							uni.navigateTo({
+								url:`../show/show?type=appoint&text=预约详细信息&id=${id}`
+							})
+							break;
+						case 16:
+							uni.showToast({
+								title:'管理员无法进行预约',
+								icon: 'none'
+							})					
+							break;
+						default:
+							uni.showToast({
+								title:'该时间段不开放预约',
+								icon: 'none'
+							})
 					}
 				}
 			}

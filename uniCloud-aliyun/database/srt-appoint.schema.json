@@ -1,6 +1,5 @@
 {
 	"bsonType": "object",
-	"required": ["uno", "eno", "appoint"],
 	"permission": {
 		"read": true,
 		"create": true,

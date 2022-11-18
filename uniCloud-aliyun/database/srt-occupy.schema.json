@@ -1,0 +1,30 @@
+{
+	"bsonType": "object",
+	"required": ["eid", "start", "end"],
+	"permission": {
+		"read": true,
+		"create": "'AUDITOR' in auth.role",
+		"update": "'AUDITOR' in auth.role",
+		"delete": "'AUDITOR' in auth.role"
+	},
+	"properties": {
+		"_id": {
+			"description": "预约ID，系统自动生成"
+		},
+		"eid": {
+			"description": "设备ID",
+			"bsonType": "string",
+			"foreignKey": "srt-equip._id"
+		},
+		"start": {
+			"description": "开始日期",
+			"bsonType": "string",
+			"pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+		},
+		"end": {
+			"description": "结束日期",
+			"bsonType": "string",
+			"pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+		}
+	}
+}
