@@ -46,6 +46,7 @@
 			</uni-button>			
 		</view>
 	</view>
+	<uni-fab v-if="role=='AUDITOR' || role=='admin'" :pattern="pattern" :content="content" @trigger="trigger" />
 </template>
 
 <script>
@@ -58,6 +59,19 @@
 		data() {
 			return {
 				role:null,
+				pattern:{
+					color:'#660874',
+					buttonColor:'#660874'
+				},
+				content:[{
+					iconPath:'/static/fab/equip.png',
+					text:'设备',
+					url:'../operate/operate'
+				},{
+					iconPath:'/static/fab/chart.png',
+					text:'统计',
+					url:'../statistic/statistic'
+				}],
 				// 用户数据
 				userData:[],
 				// 管理员数据
@@ -206,6 +220,12 @@
 				this.today=e.fulldate
 				this.title=e.fulldate==this.dateInfo.start?'今日':(parseInt(e.month)+'月'+parseInt(e.date)+'日')
 				this.refresh()
+			},
+			// 跳转至扩展功能
+			trigger(e) {
+				uni.navigateTo({
+					url:this.content[e.index].url
+				})
 			}
 		}
 	}
