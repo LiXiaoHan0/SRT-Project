@@ -20,7 +20,7 @@
 		 class="equip" :title="equip.name" :sub-title="'设备编号：'+equip.order" 
 		 margin="8px" @click="goAppoint(equip)">
 			<text>状态： </text>
-			<uni-tag :circle="true" :text="equip.state?'使用中':'空闲中'" :type="equip.state?'error':'success'"/>
+			<uni-tag :circle="true" :text="tags[equip.state][0]" :type="tags[equip.state][1]"/>
 		</uni-card>
 	</view>
 </template>
@@ -34,7 +34,8 @@
 	export default {
 		data() {
 			return {
-				equips:[]
+				equips:[],
+				tags:[['空闲中','success'],['未开放','default'],['使用中','error']]
 			}
 		},
 		computed: {
@@ -111,15 +112,19 @@
 					const hour=(now.getHours()+parseInt(now.getMinutes()/60))<<1
 					// 数据库查询
 					const db = uniCloud.database();
-					const tmp=db.collection('srt-appoint').where(`date=="${date}" && start<=${hour} && end>${hour}`).field('eid,end').getTemp()
-					db.collection('srt-equip',tmp).orderBy('order asc').get().then(({result})=>{
+					const tmp1=db.collection('srt-appoint').where(`date=="${date}" && start<=${hour} && end>${hour}`).field('eid,end').getTemp()
+					const tmp2=db.collection('srt-occupy').where(`start<="${date}" && end>="${date}"`).field('eid').getTemp()
+					db.collection('srt-equip',tmp1,tmp2).orderBy('order asc').get().then(({result})=>{
 						console.log(result)
 						for(let i in result.data){
 							let t=result.data[i]
 							if(t._id['srt-appoint'].length){
-								t.state=(t._id['srt-appoint'][0].end-hour)/2
+								// t.state=(t._id['srt-appoint'][0].end-hour)/2
+								t.state=2 // 使用状态
+							} else if(t._id['srt-occupy'].length){
+								t.state=1 // 禁用状态
 							} else{
-								t.state=0
+								t.state=0 // 空闲状态
 							}
 						}
 						this.equips=result.data
