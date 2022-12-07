@@ -28,25 +28,37 @@
 		<view class="col-flex no-more">没有更多数据了</view>
 	</view>
 	<!-- 权限为超级管理员 -->
-	<view v-else-if="role=='admin'">
-		<uni-collapse accordion>
-			<uni-collapse-item v-for="(title,i) in ['超级管理员列表','管理员列表']" :key="i" :title="title">
-				<uni-list>
-					<uni-list-item v-for="item in adminData[i].data" :key="item._id" 
-					:title="item.nickname" :note="'最后登陆时间：'+changeTime(item.last_login_date)" 
-					:thumb="item.avatar" thumb-size="lg" rightText="详细信息" 
-					showArrow clickable @click="goProfile(item._id,i)" />
-				</uni-list>
-			</uni-collapse-item>
-		</uni-collapse>
-		<view class="nominee">
-			<uni-button @click="goSearch">
-				<uni-icons type="plus" size="18" color="#fff"/>
-				<text> 设置新的管理员</text>
-			</uni-button>			
+	<view v-else-if="role=='admin'" style="margin-top:48px">
+		<uni-tabs :tabnav="tabnav" @click="refreshAdminData"></uni-tabs>
+		<!-- 权限管理 -->
+		<view v-show="tabinx==0">
+			<uni-collapse accordion>
+				<uni-collapse-item v-for="(title,i) in ['超级管理员列表','管理员列表']" :key="i" :title="title">
+					<uni-list>
+						<uni-list-item v-for="item in adminData1[i].data" :key="item._id" 
+						:title="item.nickname" :note="'最后登陆时间：'+changeTime(item.last_login_date)" 
+						:thumb="item.avatar" thumb-size="lg" rightText="详细信息" 
+						showArrow clickable @click="goProfile(item._id,i)" />
+					</uni-list>
+				</uni-collapse-item>
+			</uni-collapse>
+			<view class="nominee">
+				<uni-button @click="goSearch">
+					<uni-icons type="plus" size="18" color="#fff"/>
+					<text> 设置新的管理员</text>
+				</uni-button>			
+			</view>
+		</view>
+		<!-- 设备管理 -->
+		<view v-show="tabinx==1">
+			<uni-calendar ref="calendar" :startDate="today" :endDate="nextday" :range="true" :selected="adminData2" :insert="true" />
+			<view class="row-flex" style="justify-content:space-around;margin:12px;">
+				<uni-button type="green" @click="openTime">开放时间段</uni-button>
+				<uni-button type="red" @click="closeTime">关闭时间段</uni-button>
+			</view>
 		</view>
 	</view>
-	<uni-fab v-if="role=='AUDITOR' || role=='admin'" :pattern="pattern" :content="content" @trigger="trigger" />
+	<!-- <uni-fab v-if="role=='AUDITOR' || role=='admin'" :pattern="pattern" :content="content" @trigger="trigger" /> -->
 </template>
 
 <script>
@@ -59,29 +71,37 @@
 		data() {
 			return {
 				role:null,
-				pattern:{
-					color:'#660874',
-					buttonColor:'#660874'
-				},
-				content:[{
-					iconPath:'/static/fab/equip.png',
-					text:'设备',
-					url:'../operate/operate'
-				},{
-					iconPath:'/static/fab/chart.png',
-					text:'统计',
-					url:'../statistic/statistic'
-				}],
+				today:null,
+				nextday:null,
+				
+				// 废弃显示方案
+				// pattern:{
+				// 	color:'#660874',
+				// 	buttonColor:'#660874'
+				// },
+				// content:[{
+				// 	iconPath:'/static/fab/equip.png',
+				// 	text:'设备',
+				// 	url:'../operate/operate'
+				// },{
+				// 	iconPath:'/static/fab/chart.png',
+				// 	text:'统计',
+				// 	url:'../statistic/statistic'
+				// }],
+				
 				// 用户数据
 				userData:[],
 				// 管理员数据
 				auditData:[],
 				title:'今日',
 				message:[],
-				today:utils.formatTime(new Date()),
 				dateInfo:{start:'',end:''},
 				// 超级管理员数据
-				adminData:[{data:[]},{data:[]}]
+				tabinx:0,
+				tabnav:[{type:0,name:'权限管理'},
+						{type:1,name:'预约管理'}],
+				adminData1:[{data:[]},{data:[]}],
+				adminData2:[]
 			};
 		},
 		computed:{
@@ -103,6 +123,13 @@
 				return [['本日\n预约\n总计',data.length+'次'],['距离\n下次\n预约',ans]]
 			}
 		},
+		onLoad() {
+			let tmp1=new Date()
+			let tmp2=new Date(tmp1)
+			tmp2.setDate(tmp1.getDate()+30)
+			this.today=utils.formatTime(tmp1)
+			this.nextday=utils.formatTime(tmp2)
+		},
 		onShow() {
 			let tmp=this.userInfo.role[0]
 			if(tmp) this.role=tmp
@@ -122,7 +149,7 @@
 						this.refreshAuditData()
 						break
 					case 'admin':
-						this.refreshAdminData()
+						this.refreshAdminData(this.tabinx)
 						break
 					default:
 						uni.showToast({
@@ -161,17 +188,57 @@
 				})
 			},
 			// 刷新超级管理员数据
-			refreshAdminData(){
+			refreshAdminData(e){
+				this.tabinx=e
+				switch(e){
+					case 0:
+						this.refreshPower()
+						break
+					case 1:
+						this.refreshTime()
+						break
+				}
+			},
+			// 刷新管理权限数据
+			refreshPower(){
 				uni.showLoading({mask:true})
 				const getAudit = db.collection('uni-id-users').where('role[0]=="admin"').field('nickname,avatar,last_login_date').getTemp()
 				const getAdmin = db.collection('uni-id-users').where('role[0]=="AUDITOR"').field('nickname,avatar,last_login_date').getTemp()
 				db.multiSend(getAudit,getAdmin).then(({result})=>{
 					console.log(result)
-					this.adminData=result.dataList
+					this.adminData1=result.dataList
 					uni.hideLoading()
 				}).catch(err => {
 					utils.errReport(err)
 				})
+			},
+			// 刷新禁用时间数据
+			refreshTime(){
+				uni.showLoading({mask:true})
+				db.collection('srt-occupy').where(`end>='${this.today}' || start<='${this.nextday}'`).field('start,end').distinct().orderBy('start').get().then(({result})=>{
+					let data=result.data,tmp=[]
+					if(data.length && data[0].start<this.today) data[0].start=this.today
+					for(let i in data){
+						for(let j=new Date(data[i].start);j<=new Date(data[i].end);j.setDate(j.getDate()+1)){
+							tmp.push({
+								date: utils.formatTime(j),
+								info: '未开放'
+							})
+						}
+					}
+					this.adminData2=tmp
+					uni.hideLoading()
+				}).catch(err => {
+					utils.errReport(err)
+				})
+			},
+			// 设置关闭时间段
+			closeTime(){
+				
+			},
+			// 设置开放时间段
+			openTime(){
+				
 			},
 			// 跳转至预约详细信息
 			goAppoint(id){
@@ -222,11 +289,11 @@
 				this.refresh()
 			},
 			// 跳转至扩展功能
-			trigger(e) {
-				uni.navigateTo({
-					url:this.content[e.index].url
-				})
-			}
+			// trigger(e) {
+			// 	uni.navigateTo({
+			// 		url:this.content[e.index].url
+			// 	})
+			// }
 		}
 	}
 </script>

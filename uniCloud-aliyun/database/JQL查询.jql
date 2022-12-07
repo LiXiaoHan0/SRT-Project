@@ -8,4 +8,5 @@
 // 数据库查询有最大返回条数限制，详见：https://uniapp.dcloud.net.cn/uniCloud/cf-database.html#limit
 // 详细JQL语法，请参考：https://uniapp.dcloud.net.cn/uniCloud/jql.html
 // const dbCmd = db.command
-db.collection('uni-id-users').where(`/.*李.*/.test(nickname) && role[0]=="admin"`).field('nickname,avatar,last_login_date').get()
+// db.collection('uni-id-users').where(`/.*李.*/.test(nickname) && role[0]=="admin"`).field('nickname,avatar,last_login_date').get()
+db.collection('srt-occupy').where(`end>='2022-12-07' || start<='2023-01-06'`).field('start,end').distinct().orderBy('start').get()

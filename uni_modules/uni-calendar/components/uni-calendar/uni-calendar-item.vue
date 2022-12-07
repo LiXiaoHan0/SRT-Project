@@ -178,11 +178,11 @@
 		opacity: 0.8;
 	}
 	.uni-calendar-item--before-checked {
-		background-color: #ff5a5f;
+		background-color: #D93379;
 		color: #fff;
 	}
 	.uni-calendar-item--after-checked {
-		background-color: #ff5a5f;
+		background-color: #D93379;
 		color: #fff;
 	}
 </style>

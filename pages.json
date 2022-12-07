@@ -56,20 +56,6 @@
                 "navigationBarTitleText": "调试控制台",
                 "enablePullDownRefresh": false
             }   
-        },{
-            "path" : "pages/operate/operate",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "设备管理",
-                "enablePullDownRefresh": true
-            }
-        },{
-            "path" : "pages/statistic/statistic",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "数据统计",
-                "enablePullDownRefresh": true
-            }  
         }
     ],
     "globalStyle" : {
