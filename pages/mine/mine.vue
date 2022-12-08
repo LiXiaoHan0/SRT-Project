@@ -51,10 +51,10 @@
 		</view>
 		<!-- 设备管理 -->
 		<view v-show="tabinx==1">
-			<uni-calendar ref="calendar" :startDate="today" :endDate="nextday" :range="true" :selected="adminData2" :insert="true" />
-			<view class="row-flex" style="justify-content:space-around;margin:12px;">
-				<uni-button type="green" @click="openTime">开放时间段</uni-button>
-				<uni-button type="red" @click="closeTime">关闭时间段</uni-button>
+			<uni-calendar ref="calendar" :startDate="today" :endDate="nextday" :range="true" :selected="calendarInfo" :insert="true" @change="changeDate"/>
+			<view v-show="range" class="row-flex" style="justify-content:space-around;margin:12px;">
+				<uni-button type="green" @click="openTime(adminData2)">开放时间段</uni-button>
+				<uni-button type="red" @click="closeTime(adminData2)">关闭时间段</uni-button>
 			</view>
 		</view>
 	</view>
@@ -97,6 +97,7 @@
 				message:[],
 				dateInfo:{start:'',end:''},
 				// 超级管理员数据
+				range:false,
 				tabinx:0,
 				tabnav:[{type:0,name:'权限管理'},
 						{type:1,name:'预约管理'}],
@@ -121,6 +122,19 @@
 					}
 				}
 				return [['本日\n预约\n总计',data.length+'次'],['距离\n下次\n预约',ans]]
+			},
+			calendarInfo(){
+				let data=this.adminData2,tmp=[]
+				if(data.length && data[0].start<this.today) data[0].start=this.today
+				for(let i in data){
+					for(let j=new Date(data[i].start);j<=new Date(data[i].end);j.setDate(j.getDate()+1)){
+						tmp.push({
+							date: utils.formatTime(j),
+							info: '未开放'
+						})
+					}
+				}
+				return tmp
 			}
 		},
 		onLoad() {
@@ -216,28 +230,25 @@
 			refreshTime(){
 				uni.showLoading({mask:true})
 				db.collection('srt-occupy').where(`end>='${this.today}' || start<='${this.nextday}'`).field('start,end').distinct().orderBy('start').get().then(({result})=>{
-					let data=result.data,tmp=[]
-					if(data.length && data[0].start<this.today) data[0].start=this.today
-					for(let i in data){
-						for(let j=new Date(data[i].start);j<=new Date(data[i].end);j.setDate(j.getDate()+1)){
-							tmp.push({
-								date: utils.formatTime(j),
-								info: '未开放'
-							})
-						}
-					}
-					this.adminData2=tmp
+					this.adminData2=result.data
 					uni.hideLoading()
 				}).catch(err => {
 					utils.errReport(err)
 				})
 			},
-			// 设置关闭时间段
-			closeTime(){
-				
+			// 重新选择日历时间
+			changeDate(e){
+				if(e.range.before && e.range.after)
+					this.range=e.range
+				else
+					this.range=null
 			},
 			// 设置开放时间段
-			openTime(){
+			openTime(e){
+
+			},
+			// 设置关闭时间段
+			closeTime(e){
 				
 			},
 			// 跳转至预约详细信息
