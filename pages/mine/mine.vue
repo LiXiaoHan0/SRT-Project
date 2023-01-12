@@ -227,9 +227,9 @@
 				})
 			},
 			// 刷新禁用时间数据
-			refreshTime(){
+			refreshTime(y_m){
 				uni.showLoading({mask:true})
-				db.collection('srt-occupy').where(`end>='${this.today}' || start<='${this.nextday}'`).field('start,end').distinct().orderBy('start').get().then(({result})=>{
+				db.collection('srt-occupy').where(`y_m="${y_m}"`).field('day').distinct().get().then(({result})=>{
 					this.adminData2=result.data
 					uni.hideLoading()
 				}).catch(err => {
@@ -245,7 +245,43 @@
 			},
 			// 设置开放时间段
 			openTime(e){
-
+				// uni.showLoading({mask:true})
+				// let i=0,l=e.length,tmp=[]
+				// let a=this.range.before,b=this.range.after
+				// while(i<l && (e[i].end<a || e[i].start>b)) i++
+				// if(i<l){
+				// 	if(e[i].end>b){
+				// 		if(e[i].start<a){
+				// 			tmp.push(db.collection('srt-occupy').where(`start=='${e[i].start}'`).update({end:a}))
+				// 		}else if(e[i].start<=b){
+				// 			tmp.push()
+				// 		}
+				// 	} else{
+				// 		if(e[i].start<a){
+				// 			tmp.push()
+				// 		}else{
+				// 			tmp.push()
+				// 		}
+				// 	}
+				// }
+				// while(i<l && e[i].end<=b){
+				// 	tmp.push(db.collection('srt-occupy').where(`start=='${e[i].start}'`).remove())
+				// 	i++
+				// }
+				// if(i<l){
+				// 	if(e[i].start<=b){
+				// 		tmp.push()
+				// 	}
+				// }
+				// Promise.all(tmp).then(()=>{
+				// 	uni.hideLoading()
+				// 	uni.showToast({
+				// 		icon:'success',
+				// 		title:'时间段设置成功'
+				// 	})
+				// }).catch(err=>{
+				// 	utils.errReport(err)
+				// })
 			},
 			// 设置关闭时间段
 			closeTime(e){

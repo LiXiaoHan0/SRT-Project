@@ -9,4 +9,5 @@
 // 详细JQL语法，请参考：https://uniapp.dcloud.net.cn/uniCloud/jql.html
 // const dbCmd = db.command
 // db.collection('uni-id-users').where(`/.*李.*/.test(nickname) && role[0]=="admin"`).field('nickname,avatar,last_login_date').get()
-db.collection('srt-occupy').where(`end>='2022-12-07' || start<='2023-01-06'`).field('start,end').distinct().orderBy('start').get()
+const now=new Date()
+db.collection('srt-occupy').where(`year==${now.getFullYear()} && month==${now.getMonth()+1} && (day&${1<<now.getDate()})`).field('day').get()

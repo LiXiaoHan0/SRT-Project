@@ -113,7 +113,7 @@
 					// 数据库查询
 					const db = uniCloud.database();
 					const tmp1=db.collection('srt-appoint').where(`date=="${date}" && start<=${hour} && end>${hour}`).field('eid,end').getTemp()
-					const tmp2=db.collection('srt-occupy').where(`start<="${date}" && end>="${date}"`).field('eid').getTemp()
+					const tmp2=db.collection('srt-occupy').where(`y_m=="${date.substr(0,7)}"`).field('eid,day').getTemp()
 					db.collection('srt-equip',tmp1,tmp2).orderBy('order asc').get().then(({result})=>{
 						console.log(result)
 						for(let i in result.data){
@@ -121,7 +121,7 @@
 							if(t._id['srt-appoint'].length){
 								// t.state=(t._id['srt-appoint'][0].end-hour)/2
 								t.state=2 // 使用状态
-							} else if(t._id['srt-occupy'].length){
+							} else if(t._id['srt-occupy'].length && t._id['srt-occupy'][0].day&1<<now.getDate()){
 								t.state=1 // 禁用状态
 							} else{
 								t.state=0 // 空闲状态

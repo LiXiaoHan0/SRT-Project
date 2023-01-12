@@ -70,7 +70,7 @@
 				// 数据库查询
 				const db = uniCloud.database();
 				const tmp1=db.collection('srt-appoint').where(`eid=="${this.equip.eid}" && date>="${dates[0]}" && date<="${dates[6]}"`).field('start,end,date').orderBy('date asc,start asc').getTemp()
-				const tmp2=db.collection('srt-occupy').where(`eid=="${this.equip.eid}" && end>="${dates[0]}" && start<="${dates[6]}"`).field('start,end').orderBy('start asc').getTemp()
+				const tmp2=db.collection('srt-occupy').where(`eid=="${this.equip.eid}" && (y_m=="${dates[0].substr(0,7)}" || y_m=="${dates[6].substr(0,7)}")`).field('day,y_m').orderBy('y_m asc').getTemp()
 				db.multiSend(tmp1,tmp2).then(({result})=>{
 					// console.log(result)
 					let j=0,k=0,begin=18,occupy=0
@@ -79,8 +79,11 @@
 					let period=[[],[],[],[],[],[],[]]
 					// 数据处理
 					for(let i in data0){
-						while(data0[i].start>dates[k]) ++k
-						while(dates[k]<=data0[i].end&&k<7) occupy+=1<<k++
+						while(data0[i].y_m>dates[k].substr(0,7)) ++k
+						while(k<7 && data0[i].y_m==dates[k].substr(0,7)){
+							if(data0[i].day&1<<parseInt(dates[k].substr(8))) occupy+=1<<k
+							++k
+						}
 					}
 					data.push({date:tomorrow(now),_id:''})
 					for(let i in data){
