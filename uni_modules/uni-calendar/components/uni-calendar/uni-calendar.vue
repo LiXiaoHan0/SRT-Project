@@ -21,7 +21,6 @@
 					<view class="uni-calendar__header-btn uni-calendar--right"></view>
 				</view>
 				<text class="uni-calendar__backtoday" @click="backtoday">{{todayText}}</text>
-
 			</view>
 			<view class="uni-calendar__box">
 				<view v-if="showMonth" class="uni-calendar__box-bg">

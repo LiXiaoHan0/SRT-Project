@@ -51,11 +51,12 @@
 		</view>
 		<!-- 设备管理 -->
 		<view v-show="tabinx==1">
-			<uni-calendar ref="calendar" :startDate="today" :endDate="nextday" :range="true" :selected="calendarInfo" :insert="true" @change="changeDate"/>
+			<uni-dates ref="dates" @change="changeMonth"></uni-dates>
+			<!-- <uni-calendar ref="calendar" :startDate="today" :endDate="nextday" :range="true" :selected="calendarInfo" :insert="true" @change="changeDate"/>
 			<view v-show="range" class="row-flex" style="justify-content:space-around;margin:12px;">
 				<uni-button type="green" @click="openTime(adminData2)">开放时间段</uni-button>
 				<uni-button type="red" @click="closeTime(adminData2)">关闭时间段</uni-button>
-			</view>
+			</view> -->
 		</view>
 	</view>
 	<!-- <uni-fab v-if="role=='AUDITOR' || role=='admin'" :pattern="pattern" :content="content" @trigger="trigger" /> -->
@@ -123,19 +124,19 @@
 				}
 				return [['本日\n预约\n总计',data.length+'次'],['距离\n下次\n预约',ans]]
 			},
-			calendarInfo(){
-				let data=this.adminData2,tmp=[]
-				if(data.length && data[0].start<this.today) data[0].start=this.today
-				for(let i in data){
-					for(let j=new Date(data[i].start);j<=new Date(data[i].end);j.setDate(j.getDate()+1)){
-						tmp.push({
-							date: utils.formatTime(j),
-							info: '未开放'
-						})
-					}
-				}
-				return tmp
-			}
+			// calendarInfo(){
+			// 	let data=this.adminData2,tmp=[]
+			// 	if(data.length && data[0].start<this.today) data[0].start=this.today
+			// 	for(let i in data){
+			// 		for(let j=new Date(data[i].start);j<=new Date(data[i].end);j.setDate(j.getDate()+1)){
+			// 			tmp.push({
+			// 				date: utils.formatTime(j),
+			// 				info: '未开放'
+			// 			})
+			// 		}
+			// 	}
+			// 	return tmp
+			// }
 		},
 		onLoad() {
 			let tmp1=new Date()
@@ -209,7 +210,7 @@
 						this.refreshPower()
 						break
 					case 1:
-						this.refreshTime()
+						this.$refs.dates.refreshTime()
 						break
 				}
 			},
@@ -227,21 +228,24 @@
 				})
 			},
 			// 刷新禁用时间数据
-			refreshTime(y_m){
+			// refreshTime(y_m){
+			// 	uni.showLoading({mask:true})
+			// 	db.collection('srt-occupy').where(`y_m="${y_m}"`).field('day').distinct().get().then(({result})=>{
+			// 		this.adminData2=result.data
+			// 		uni.hideLoading()
+			// 	}).catch(err => {
+			// 		utils.errReport(err)
+			// 	})
+			// },
+			// 重新选择日历时间
+			changeMonth({y,m}){
 				uni.showLoading({mask:true})
-				db.collection('srt-occupy').where(`y_m="${y_m}"`).field('day').distinct().get().then(({result})=>{
-					this.adminData2=result.data
+				db.collection('srt-occupy').where(`y_m=="${y}-${(m<10?'0':'')+m}"`).field('day').distinct().get().then(({result})=>{
+					if(result.data.length) this.$refs.dates.states=result.data[0].day
 					uni.hideLoading()
 				}).catch(err => {
 					utils.errReport(err)
 				})
-			},
-			// 重新选择日历时间
-			changeDate(e){
-				if(e.range.before && e.range.after)
-					this.range=e.range
-				else
-					this.range=null
 			},
 			// 设置开放时间段
 			openTime(e){
