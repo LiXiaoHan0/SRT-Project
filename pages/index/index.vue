@@ -16,13 +16,13 @@
 	</view>
 	<!-- 功能按钮 -->
 	<view class="row-flex button_box">
-		<uni-button style="margin-top:20px;" @click="goAppoint">
+		<uni-button style="margin-top:20px" bgcolor="#53038A" hovercolor="#660874" @click="goAppoint">
 			<view class="col-flex">
 				<image class="button_image" src="../../static/index/2.png"></image>
 				<text style="font-size:16px;">预约打印设备</text>
 			</view>
 		</uni-button>
-		<uni-button style="margin-top:20px;" @click="changeInfo">
+		<uni-button style="margin-top:20px" bgcolor="#53038A" hovercolor="#660874" @click="changeInfo">
 			<view class="col-flex">
 				<image class="button_image" src="../../static/index/1.png"></image>
 				<text style="font-size:16px;">修改个人信息</text>
