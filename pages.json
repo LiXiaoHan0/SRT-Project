@@ -13,7 +13,8 @@
 	"pages" : [{
             "path" : "pages/index/index",
             "style" : {
-                "navigationStyle" : "custom"
+                "navigationStyle" : "custom",
+				"enablePullDownRefresh" : false
             }
         },{
             "path" : "pages/login/login",
