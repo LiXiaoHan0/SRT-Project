@@ -210,7 +210,7 @@
 						this.refreshPower()
 						break
 					case 1:
-						this.$refs.dates.refreshTime()
+						this.changeMonth(this.$refs.dates.now)
 						break
 				}
 			},
