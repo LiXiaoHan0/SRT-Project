@@ -30,7 +30,7 @@
 	<!-- 权限为超级管理员 -->
 	<view v-else-if="role=='admin'" style="margin-top:48px">
 		<uni-tabs :tabnav="tabnav" @click="refreshAdminData"></uni-tabs>
-		<!-- 权限管理 -->
+		<!-- 用户权限管理 -->
 		<view v-show="tabinx==0">
 			<uni-collapse accordion>
 				<uni-collapse-item v-for="(title,i) in ['超级管理员列表','管理员列表']" :key="i" :title="title">
@@ -42,16 +42,16 @@
 					</uni-list>
 				</uni-collapse-item>
 			</uni-collapse>
-			<view class="nominee">
+			<view style="margin: 30px 60px">
 				<uni-button @click="goSearch">
 					<uni-icons type="plus" size="18" color="#fff"/>
 					<text> 设置新的管理员</text>
 				</uni-button>			
 			</view>
 		</view>
-		<!-- 设备管理 -->
+		<!-- 开放时间管理 -->
 		<view v-show="tabinx==1">
-			<uni-dates ref="dates" @change="changeMonth"></uni-dates>
+			<uni-dates ref="dates" @changeMonth="changeMonth" @changeState="changeState"></uni-dates>
 			<!-- <uni-calendar ref="calendar" :startDate="today" :endDate="nextday" :range="true" :selected="calendarInfo" :insert="true" @change="changeDate"/>
 			<view v-show="range" class="row-flex" style="justify-content:space-around;margin:12px;">
 				<uni-button type="green" @click="openTime(adminData2)">开放时间段</uni-button>
@@ -98,10 +98,10 @@
 				message:[],
 				dateInfo:{start:'',end:''},
 				// 超级管理员数据
-				range:false,
+				lock:true,
 				tabinx:0,
-				tabnav:[{type:0,name:'权限管理'},
-						{type:1,name:'预约管理'}],
+				tabnav:[{type:0,name:'用户权限管理'},
+						{type:1,name:'开放时间管理'}],
 				adminData1:[{data:[]},{data:[]}],
 				adminData2:[]
 			};
@@ -241,14 +241,32 @@
 			changeMonth({y,m}){
 				uni.showLoading({mask:true})
 				db.collection('srt-occupy').where(`y_m=="${y}-${(m<10?'0':'')+m}"`).field('day').distinct().get().then(({result})=>{
-					if(result.data.length) this.$refs.dates.states=result.data[0].day
+					if(result.data.length) 
+						this.$refs.dates.refreshState(result.data[0].day)
+					else
+						this.$refs.dates.refreshState(0)
 					uni.hideLoading()
 				}).catch(err => {
 					utils.errReport(err)
 				})
 			},
+			// 更改日历开放时间
+			changeState({y,m},state){
+				uni.showLoading({mask:true})
+				db.collection('srt-occupy').where(`y_m=="${y}-${(m<10?'0':'')+m}"`).update({day:state}).then(({result})=>{
+					console.log(result)
+					this.$refs.dates.refreshState(state)
+					uni.hideLoading()
+					uni.showToast({
+						icon:'success',
+						title:'修改成功'
+					})
+				}).catch(err => {
+					utils.errReport(err)
+				})
+			},
 			// 设置开放时间段
-			openTime(e){
+			// openTime(e){
 				// uni.showLoading({mask:true})
 				// let i=0,l=e.length,tmp=[]
 				// let a=this.range.before,b=this.range.after
@@ -286,11 +304,11 @@
 				// }).catch(err=>{
 				// 	utils.errReport(err)
 				// })
-			},
+			// },
 			// 设置关闭时间段
-			closeTime(e){
+			// closeTime(e){
 				
-			},
+			// },
 			// 跳转至预约详细信息
 			goAppoint(id){
 				uni.navigateTo({
@@ -350,10 +368,6 @@
 </script>
 
 <style lang="scss" scoped>
-	.nominee{
-		color: #fff;
-		margin: 30px 60px;
-	}
 	.top-info{
 		top: -10px;
 		z-index: 1;
