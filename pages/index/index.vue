@@ -10,7 +10,7 @@
 			</view>
 			<view class="nickname">{{userInfo.nickname}}</view>
 		</view>
-		<uni-button bgcolor="#FFFFFF00" bordcolor="#FFFFFF" hovercolor="#FFFFFF66" style="margin-top:20px;" @click="goToLogin">
+		<uni-button bgcolor="#FFFFFF00" bordcolor="#FFFFFF" hovercolor="#FFFFFF66" style="margin-top:20px;" @click="goLogin">
 			<text>{{buttonText}}</text>
 		</uni-button>
 	</view>
@@ -177,7 +177,7 @@
 				})
 			},
 			// 点击登录按钮
-			goToLogin() {
+			goLogin() {
 				if(this.login){
 					uni.navigateTo({
 						url: '../login/login?uid=' + this.userInfo.uid + '&change='+(this.userInfo.mobile?'true':'false')

@@ -196,7 +196,7 @@
 	}
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 	// 头部栏
 	.header{
 		position: relative;

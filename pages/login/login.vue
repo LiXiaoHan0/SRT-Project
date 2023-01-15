@@ -203,6 +203,9 @@
 			console.log(e.uid)
 			userId=e.uid
 			if(e.change=='true'){
+				uni.setNavigationBarTitle({
+					title:'修改信息'
+				})
 				let data=this.userInfo
 				this.change=true
 				this.loginData={
