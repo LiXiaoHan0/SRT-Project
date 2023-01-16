@@ -1,5 +1,5 @@
 <template>
-	<uni-card :title="equip.name" :subTitle="'设备编号：'+equip.order" :extra="'清华大学李兆基科技大楼A305'">
+	<uni-card :title="equip.name" :subTitle="'设备编号：'+equip.order" extra="清华大学李兆基科技大楼A305">
 		<view v-for="(item,index) in mark" :key="index">{{item}}</view>
 	</uni-card>
 	<view v-show="periods.length" class="row-flex" style="padding:3%;margin-top:-20px;">

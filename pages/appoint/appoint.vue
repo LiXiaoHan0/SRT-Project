@@ -83,7 +83,6 @@
 				this.$refs.infoForm.validate(['date','eid','state']).then(formData=>{
 					formData.uid=uniCloud.getCurrentUserInfo().uid
 					console.log(formData)
-					const db = uniCloud.database();
 					return new Promise((resolve,reject)=>{
 						uni.hideLoading()
 						uni.requestSubscribeMessage({

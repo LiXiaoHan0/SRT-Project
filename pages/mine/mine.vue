@@ -176,7 +176,8 @@
 			// 刷新用户数据
 			refreshUserData(){
 				uni.showLoading({mask:true})
-				db.collection('srt-appoint').where(`date>="${utils.formatTime(new Date())}" && uid=="${uniCloud.getCurrentUserInfo().uid}"`).field('title,start,end,date').get().then(({result})=>{
+				db.collection('srt-appoint').where(`date>="${utils.formatTime(new Date())}" && uid=="${uniCloud.getCurrentUserInfo().uid}"`)
+				.field('title,start,end,date').orderBy('date desc, start desc, end desc').get().then(({result})=>{
 					console.log(result)
 					this.userData=result.data
 					uni.hideLoading()
@@ -251,9 +252,10 @@
 				})
 			},
 			// 更改日历开放时间
-			changeState({y,m},state){
+			changeState({y,m},state,backup){
 				uni.showLoading({mask:true})
-				db.collection('srt-occupy').where(`y_m=="${y}-${(m<10?'0':'')+m}"`).update({day:state}).then(({result})=>{
+				const y_m=y+'-'+(m<10?'0':'')+m
+				db.collection('srt-occupy').where(`y_m=="${y_m}"`).update({day:state}).then(({result})=>{
 					console.log(result)
 					this.$refs.dates.refreshState(state)
 					uni.hideLoading()
@@ -261,8 +263,29 @@
 						icon:'success',
 						title:'修改成功'
 					})
+					this.sendMessage(((state^backup)&state)>>1,y_m)
 				}).catch(err => {
 					utils.errReport(err)
+				})
+			},
+			// 通知预约取消
+			sendMessage(t,y_m){
+				let i=1,dates=[]
+				while(t>0){
+					if(t&1) dates.push(y_m+(i<10?'-0':'-')+i)
+					t=t>>1;++i
+				}
+				console.log('date in ["'+dates.join('","')+'"]')
+				db.collection('srt-appoint').where('date in ["'+dates.join('","')+'"]').field('_id').get().then(({result})=>{
+					let tmp=[]
+					for(i of result.data) tmp.push(i._id)
+					uniCloud.callFunction({
+						name: 'cancel-msg',
+						data: {
+							item:tmp,
+							log:'设备临时关闭开放'
+						}
+					})
 				})
 			},
 			// 设置开放时间段
