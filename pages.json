@@ -28,11 +28,6 @@
                 "enablePullDownRefresh" : true
             }
         },{
-            "path" : "pages/equip/equip",
-            "style" : {
-                "navigationBarTitleText": "设备信息"
-            }            
-        },{
             "path" : "pages/appoint/appoint",
             "style" :{
                 "navigationBarTitleText": "预约设备",
