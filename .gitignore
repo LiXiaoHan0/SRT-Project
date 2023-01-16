@@ -2,5 +2,5 @@
 unpackage/
 
 # 忽略含app-secret代码
-uniCloud-aliyun/cloudfunctions/
-uni_modules/uni-config-center/
+# uniCloud-aliyun/cloudfunctions/get-token/
+# uni_modules/uni-config-center/

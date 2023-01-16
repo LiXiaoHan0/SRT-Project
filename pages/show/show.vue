@@ -56,9 +56,9 @@
 					uni.showToast({
 						icon: 'success',
 						title: e+'成功',
-						mask: true
+						mask: true,
+						complete:setTimeout(uni.navigateBack,1500,{delta:1})
 					})
-					setTimeout(uni.navigateBack,1500,{delta:1})
 				})
 			}
 		},
@@ -95,8 +95,9 @@
 						uni.hideLoading()
 						uni.showToast({
 							icon: 'error',
+							mask: true,
 							title: '服务器请求失败',
-							complete: uni.navigateBack()
+							complete: setTimeout(uni.navigateBack,1500,{delta:1})
 						})
 					})
 					break
@@ -120,9 +121,10 @@
 						console.log(err)
 						uni.hideLoading()
 						uni.showToast({
+							mask: true,
 							icon: 'error',
 							title: '服务器请求错误',
-							complete: uni.navigateBack()
+							complete: setTimeout(uni.navigateBack,1500,{delta:1})
 						})
 					})
 					break

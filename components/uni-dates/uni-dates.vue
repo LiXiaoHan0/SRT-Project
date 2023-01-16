@@ -166,11 +166,17 @@
 			comfirmDate(){
 				uni.showModal({
 					title: '提示',
-					content: '确定要修改开放日期吗？\n时间冲突的预约将被取消',
+					content: '确定要修改开放日期吗？时间冲突的预约将被取消',
 				}).then(res=>{
 					if (res.confirm) {
 						console.log('确定修改',this.states);
-						this.$emit('changeState',this.now,this.states)
+						if(this.states!=this.backup)
+							this.$emit('changeState',this.now,this.states,this.backup)
+						else
+							uni.showToast({
+								icon:'error',
+								title:'未进行任何修改'
+							})
 					}
 				})
 			},
