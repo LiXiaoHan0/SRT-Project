@@ -103,8 +103,7 @@
 				case 'appoint':
 					const tmp1 = db.collection('srt-appoint').where(`_id=="${e.id}"`).getTemp()
 					const tmp2 = db.collection('uni-id-users').field('_id,nickname,mobile,school_id').getTemp()
-					const tmp3 = db.collection('srt-equip').getTemp()
-					db.collection(tmp1,tmp2,tmp3).get().then(res => {
+					db.collection(tmp1,tmp2).get().then(res => {
 						console.log(res)
 						let data = res.result.data[0]
 						this.detail = [
@@ -115,7 +114,6 @@
 							['预约用户学/工号', data.uid[0].school_id || '校外用户'],
 							['预约日期',data.date],
 							['预约时间', utils.numtoTime(data.start) + '~' + utils.numtoTime(data.end)],
-							['预约设备',data.eid[0].name + ' ' + data.eid[0].order]
 						]
 						uni.hideLoading()
 					}).catch(err => {

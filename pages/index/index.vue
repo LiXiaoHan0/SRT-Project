@@ -15,7 +15,7 @@
 		</uni-button>
 	</view>
 	<!-- 功能按钮 -->
-	<view class="row-flex button_box">
+	<view class="row-flex button_box" v-if="userInfo.mobile">
 		<uni-button style="margin-top:20px" bgcolor="#53038A" hovercolor="#660874" @click="goAppoint">
 			<view class="col-flex">
 				<image class="button_image" src="../../static/index/2.png"></image>
@@ -157,9 +157,16 @@
 			},
 			// 前往设备预约
 			goAppoint(){
-				uni.navigateTo({
-					url: '../appoint/appoint?uid=' + this.userInfo.uid + '&change=true'
-				})
+				if(this.userInfo.role[0]=='USER'){
+					uni.navigateTo({
+						url: '../appoint/appoint?uid=' + this.userInfo.uid + '&change=true'
+					})
+				} else{
+					uni.showToast({
+						icon:'none',
+						title:'管理员无法进行预约'
+					})
+				}
 			}
 		}
 	}

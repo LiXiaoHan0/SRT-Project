@@ -176,7 +176,7 @@
 			// 刷新用户数据
 			refreshUserData(){
 				uni.showLoading({mask:true})
-				db.collection('srt-appoint').where(`date>="${utils.formatTime(new Date())}" && uid=="${uniCloud.getCurrentUserInfo().uid}"`).field('title,start,end,date').get().then(({result})=>{
+				db.collection('srt-appoint').where(`date>="${utils.formatTime(new Date())}" && uid=="${uniCloud.getCurrentUserInfo().uid}"`).field('title,start,end,date').orderBy('date desc, start desc, end desc').get().then(({result})=>{
 					console.log(result)
 					this.userData=result.data
 					uni.hideLoading()

@@ -1,8 +1,11 @@
 <template>
+	<uni-card title="预约须知" subTitle="请仔细阅读以下条款" extra="李兆基科技大楼A305">
+		<view v-for="(item,index) in mark" :key="index">{{item}}</view>
+	</uni-card>
 	<view style="padding:20px 8%;">
 		<uni-forms label-width="100" ref="infoForm" :modelValue="appointData" :rules="rules">
-			<uni-forms-item required label="预约日期">
-				<uni-easyinput disabled type="text" v-model="appointData.date" />
+			<uni-forms-item required label="预约日期" name="date">
+				<uni-data-select v-model="appointData.date" placeholder="请选择预约日期" :localdata="dates" :clear="false" />
 			</uni-forms-item>
 			<uni-forms-item required label="预约开始时间" name="start">
 				<uni-data-select v-model="appointData.start" placeholder="请选择预约开始时间" :localdata="st_time" :clear="false" @change="changeStart" />
@@ -24,22 +27,31 @@
 </template>
 
 <script>
+	const dates=[]
+	const db = uniCloud.database();
+	const tomorrow= day=>{return utils.formatTime(new Date(day.setDate(day.getDate() + 1)))}
 	import utils from '../../common/utils.js'
 	export default {
 		data() {
 			return {
+				dates:[],
 				st_time:[],
 				ed_time:[],
 				appointData:{
-					eid:null,
 					date:null,
 					title:null,
 					teacher:null,
 					start:null,
 					end:null,
-					state:0,
+					state:0
 				},
 				rules: { // 校验设置
+					date: {
+						rules: [{
+							required: true,
+							errorMessage: '预约日期不能为空',
+						}]
+					},
 					title: {
 						rules: [{
 							required: true,
@@ -71,7 +83,11 @@
 							errorMessage: '结束时间不能小于等于开始时间',
 						}]
 					}
-				}
+				},
+				mark:['1. 最早可以提前一周进行预约，部分日期可能因为设备检修等原因暂停开放。',
+					'2. 一般3D打印用时较长，请合理估计预约时间，避免影响他人。',
+					'3. 请按预约时间到场进行3D打印，多次违约可能受到一定惩罚措施。',
+					]
 			}
 		},
 		methods:{
@@ -80,10 +96,9 @@
 			},
 			submitForm(){
 				uni.showLoading({mask:true})
-				this.$refs.infoForm.validate(['date','eid','state']).then(formData=>{
+				this.$refs.infoForm.validate(['state']).then(formData=>{
 					formData.uid=uniCloud.getCurrentUserInfo().uid
 					console.log(formData)
-					const db = uniCloud.database();
 					return new Promise((resolve,reject)=>{
 						uni.hideLoading()
 						uni.requestSubscribeMessage({
@@ -96,51 +111,16 @@
 							if(res['2oavjREU4Kvy_hp3YYsRhkGpDgqkmleueBoFf9J358Q']=='accept'){formData.state+=2}
 							// 提交预约信息
 							uni.showLoading({mask:true})
-							return uniCloud.callFunction({
-								name:'check-time',
-								data:{
-									value:formData,
-									time:{
-										today:utils.formatTime(now),
-										hour:(now.getHours()<<1)+parseInt(now.getMinutes()/30)
-									}
-								}
-							})
+							return db.collection('srt-appoint').add(formData)
 						}).then(({result})=>{
 							console.log(result)
 							uni.hideLoading()
-							switch (result){
-								case 100:
-									uni.showToast({
-										icon: 'success',
-										title: '预约提交成功',
-										mask: true
-									})
-									setTimeout(uni.navigateBack,1500,{delta:2})
-									break;
-								case 101:
-									uni.showToast({
-										icon: 'error',
-										title: '包含过去时间段',
-										mask: true
-									})
-									break;
-								case 102:
-									uni.showToast({
-										icon: 'error',
-										title: '预约时间冲突',
-										mask: true
-									})
-									setTimeout(uni.navigateBack,1500,{delta:1})
-									break;
-								default:
-									uni.showToast({
-										icon: 'error',
-										title: '服务器请求错误',
-										mask: true
-									})
-							}
-							
+							uni.showToast({
+								icon: 'success',
+								title: '预约提交成功',
+								mask: true
+							})
+							setTimeout(uni.navigateBack,1500,{delta:1})
 						}).catch(err=>{
 								reject(err)
 						})
@@ -151,16 +131,41 @@
 			}
 		},
 		onLoad(e){
-			let times=[],detail=[]
-			detail=e.detail.split('/')
-			console.log(e.eid)
-			this.appointData.eid=e.eid
-			this.appointData.date=detail[0]
-			for(let i=parseInt(detail[1]);i<=parseInt(detail[2]);i=i+2){
+			uni.showLoading({mask:true})
+			let times=[]
+			for(let i=18;i<=44;i=i+2){
 				times.push({text:utils.numtoTime(i),value:i})
 			}
 			this.st_time=times.slice(0,-1)
 			this.ed_time=times.slice(1)
+			
+			// 时间常数
+			const now = new Date()
+			dates[0]=utils.formatTime(now)
+			for(let i=1;i<7;i++){
+				dates[i]=tomorrow(now)
+			}
+			
+			// 数据库查询
+			db.collection('srt-occupy').where(`(y_m=="${dates[0].substr(0,7)}" || y_m=="${dates[6].substr(0,7)}")`).field('day,y_m').orderBy('y_m asc').get().then(({result})=>{
+				console.log(result)
+				let k=0,data0=result.data
+				// 数据处理
+				for(let i in data0){
+					while(data0[i].y_m>dates[k].substr(0,7)) 
+						this.dates.push({text:dates[k],value:dates[k++]})
+					while(k<7 && data0[i].y_m==dates[k].substr(0,7)){
+						if(data0[i].day&1<<parseInt(dates[k].substr(8)))
+							++k
+						else
+							this.dates.push({text:dates[k],value:dates[k++]})
+					}
+				}
+				uni.hideLoading()
+			}).catch(err=>{
+				this.dates=[]
+				utils.errReport(err)
+			})
 		}
 	}
 </script>
