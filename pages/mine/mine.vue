@@ -2,7 +2,7 @@
 	<!-- 权限为普通用户 -->
 	<view v-if="role=='USER'">
 		<uni-card v-for="item in userData" :key="item._id" :title="item.title" :extra="'点击查看详情'" @click="goAppoint(item._id)">
-			<text>预约日期：{{item.date}}\n预约时间：{{realTime(item)}}\n预约地点：清华大学李兆基科技大楼A305</text>
+			<text>预约日期：{{item.date}}\n预约时间：{{realTime(item)}}\n预约地点：李兆基科技大楼A305</text>
 		</uni-card>
 		<view class="col-flex no-more">没有更多数据了</view>
 	</view>
