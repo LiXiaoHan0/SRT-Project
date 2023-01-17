@@ -39,7 +39,7 @@
 	// 数据显示完成提示
 	.no-more{
 		color:$grey2;
-		padding:5px 0 15px;
+		padding:15px 0;
 		font: 300 12px/14px $body-font-family;
 	}
 </style>
