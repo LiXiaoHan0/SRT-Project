@@ -29,6 +29,8 @@
 			</view>
 		</uni-button>
 	</view>
+	<!-- 版本号 -->
+	<view class="version">Copyright 2022 , Version : 0.5.1</view>
 </template>
 
 <script>
@@ -221,5 +223,17 @@
 		height: 70px;
 		width: 70px;
 		margin-bottom: 8px;
+	}
+	
+	.version{
+		bottom: 10px;
+		width: 100%;
+		text-align: center;
+		position: absolute;
+		
+		color: #CCC;
+		font-size: 12px;
+		font-weight: light;
+		
 	}
 </style>
