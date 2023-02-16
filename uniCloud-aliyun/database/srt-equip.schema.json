@@ -18,6 +18,10 @@
 		"order": {
 			"description": "设备序号",
 			"bsonType": "string"
+		},
+		"time":{
+			"description": "结束时间",
+			"bsonType": "int"
 		}
 	}
 }
