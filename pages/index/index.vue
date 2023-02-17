@@ -17,7 +17,7 @@
 	<!-- 设备信息 -->
 	<view class="row-flex" style="flex-wrap:wrap;padding: 5px;">
 		<uni-card v-for="equip in equips" :key="equip._id._value" 
-		 class="equip" :title="equip.name" :sub-title="'设备编号：'+equip.order" 
+		 class="equip" :title="equip.name" :sub-title="'编号：'+equip.order" 
 		 margin="8px" @click="goAppoint(equip)">
 			<text>状态： </text>
 			<uni-tag :circle="true" :text="tags[equip.state][0]" :type="tags[equip.state][1]"/>
@@ -35,7 +35,7 @@
 		data() {
 			return {
 				equips:[],
-				tags:[['空闲中','success'],['未开放','default'],['使用中','error']]
+				tags:[['空闲','success'],['停用','default'],['占用','error']]
 			}
 		},
 		computed: {
@@ -261,6 +261,6 @@
 	.equip{
 		width: 50%;
 		min-width: 175px;
-		max-width: 360px;
+		max-width: 250px;
 	}
 </style>
