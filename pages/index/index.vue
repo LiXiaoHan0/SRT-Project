@@ -17,10 +17,16 @@
 	<!-- 设备信息 -->
 	<view class="row-flex" style="flex-wrap:wrap;padding: 5px;">
 		<uni-card v-for="equip in equips" :key="equip._id._value" 
-		 class="equip" :title="equip.name" :sub-title="'设备编号：'+equip.order" 
+		 class="equip" :title="equip.name" :sub-title="'编号：'+equip.order" 
 		 margin="8px" @click="goAppoint(equip)">
-			<text>状态： </text>
-			<uni-tag :circle="true" :text="tags[equip.state][0]" :type="tags[equip.state][1]"/>
+			<uni-tag v-slot:extra :circle="true" :text="tags[equip.state][0]" :type="tags[equip.state][1]"/>
+			<view v-if="equip.state">
+				<text>距离打印任务完成</text>
+				<uni-countdown :hour="equip.h" :minute="equip.m" :second="equip.s" :show-colon="false" :show-day="false" @timeup="refreshEquip" />
+			</view>
+			<view v-else>
+				<text>暂无打印任务\n欢迎咨询使用</text>
+			</view>
 		</uni-card>
 	</view>
 </template>
@@ -35,7 +41,7 @@
 		data() {
 			return {
 				equips:[],
-				tags:[['空闲中','success'],['未开放','default'],['使用中','error']]
+				tags:[['空闲','success'],['停用','default'],['占用','error']]
 			}
 		},
 		computed: {
@@ -112,18 +118,19 @@
 					const hour=(now.getHours()+parseInt(now.getMinutes()/60))<<1
 					// 数据库查询
 					const db = uniCloud.database();
-					const tmp1=db.collection('srt-appoint').where(`date=="${date}" && start<=${hour} && end>${hour}`).field('eid,end').getTemp()
-					const tmp2=db.collection('srt-occupy').where(`y_m=="${date.substr(0,7)}"`).field('eid,day').getTemp()
-					db.collection('srt-equip',tmp1,tmp2).orderBy('order asc').get().then(({result})=>{
+					db.collection('srt-equip').orderBy('order asc').get().then(({result})=>{
 						console.log(result)
+						const stamp=now.getTime()
 						for(let i in result.data){
 							let t=result.data[i]
-							if(t._id['srt-appoint'].length){
-								// t.state=(t._id['srt-appoint'][0].end-hour)/2
+							if(t.time>stamp){
+								let tmp=parseInt((t.time-stamp)/1000)+1
+								t.h=parseInt(tmp/3600)
+								t.m=parseInt(tmp/60)%60
+								t.s=tmp%60
 								t.state=2 // 使用状态
-							} else if(t._id['srt-occupy'].length && t._id['srt-occupy'][0].day&1<<now.getDate()){
-								t.state=1 // 禁用状态
 							} else{
+								t.h=0;t.m=0;t.s=0
 								t.state=0 // 空闲状态
 							}
 						}
@@ -176,6 +183,10 @@
 					})
 				})
 			},
+			// 更改设备状态
+			setStates(e){
+				
+			},
 			// 点击登录按钮
 			goLogin() {
 				if(this.login){
@@ -204,9 +215,22 @@
 			// 点击预约设备
 			goAppoint(equip){
 				if('mobile' in this.userInfo){
-					uni.navigateTo({
-						url:`../equip/equip?eid=${equip._id._value}&name=${equip.name}&order=${equip.order}`
-					})					
+					switch(this.userInfo.role[0]){
+						case 'AUDITOR':
+						case 'admin':
+							this.setStates(equip.state)
+							break
+						default:
+							let info=['设备空闲中，请前往李兆基科技大楼A305室',
+										'设备停用中，请选择其他设备',
+										'设备使用中，请选择其他设备']
+							uni.showToast({
+								icon: 'none',
+								duration: 2000,
+								title: info[equip.state]
+							})
+						break
+					}
 				} else {
 					uni.showToast({
 						icon: 'none',
@@ -261,6 +285,6 @@
 	.equip{
 		width: 50%;
 		min-width: 175px;
-		max-width: 360px;
+		max-width: 250px;
 	}
 </style>

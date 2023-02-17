@@ -10,4 +10,4 @@
 // const dbCmd = db.command
 // db.collection('uni-id-users').where(`/.*李.*/.test(nickname) && role[0]=="admin"`).field('nickname,avatar,last_login_date').get()
 const now=new Date()
-db.collection('srt-occupy').where(`year==${now.getFullYear()} && month==${now.getMonth()+1} && (day&${1<<now.getDate()})`).field('day').get()
+db.collection('srt-equip').where('order<"100"').update({time:db.getCloudEnv('$cloudEnv_now')})

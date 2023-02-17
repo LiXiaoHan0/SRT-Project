@@ -28,38 +28,25 @@
 		<view class="col-flex no-more">没有更多数据了</view>
 	</view>
 	<!-- 权限为超级管理员 -->
-	<view v-else-if="role=='admin'" style="margin-top:48px">
-		<uni-tabs :tabnav="tabnav" @click="refreshAdminData"></uni-tabs>
+	<view v-else-if="role=='admin'">
 		<!-- 用户权限管理 -->
-		<view v-show="tabinx==0">
-			<uni-collapse accordion>
-				<uni-collapse-item v-for="(title,i) in ['超级管理员列表','管理员列表']" :key="i" :title="title">
-					<uni-list>
-						<uni-list-item v-for="item in adminData1[i].data" :key="item._id" 
-						:title="item.nickname" :note="'最后登陆时间：'+changeTime(item.last_login_date)" 
-						:thumb="item.avatar" thumb-size="lg" rightText="详细信息" 
-						showArrow clickable @click="goProfile(item._id,i)" />
-					</uni-list>
-				</uni-collapse-item>
-			</uni-collapse>
-			<view style="margin: 30px 60px">
-				<uni-button @click="goSearch">
-					<uni-icons type="plus" size="18" color="#fff"/>
-					<text> 设置新的管理员</text>
-				</uni-button>			
-			</view>
-		</view>
-		<!-- 开放时间管理 -->
-		<view v-show="tabinx==1">
-			<uni-dates ref="dates" @changeMonth="changeMonth" @changeState="changeState"></uni-dates>
-			<!-- <uni-calendar ref="calendar" :startDate="today" :endDate="nextday" :range="true" :selected="calendarInfo" :insert="true" @change="changeDate"/>
-			<view v-show="range" class="row-flex" style="justify-content:space-around;margin:12px;">
-				<uni-button type="green" @click="openTime(adminData2)">开放时间段</uni-button>
-				<uni-button type="red" @click="closeTime(adminData2)">关闭时间段</uni-button>
-			</view> -->
+		<uni-collapse accordion>
+			<uni-collapse-item v-for="(title,i) in ['超级管理员列表','管理员列表']" :key="i" :title="title">
+				<uni-list>
+					<uni-list-item v-for="item in adminData1[i].data" :key="item._id" 
+					:title="item.nickname" :note="'最后登陆时间：'+changeTime(item.last_login_date)" 
+					:thumb="item.avatar" thumb-size="lg" rightText="详细信息" 
+					showArrow clickable @click="goProfile(item._id,i)" />
+				</uni-list>
+			</uni-collapse-item>
+		</uni-collapse>
+		<view style="margin: 30px 60px">
+			<uni-button @click="goSearch">
+				<uni-icons type="plus" size="18" color="#fff"/>
+				<text> 设置新的管理员</text>
+			</uni-button>			
 		</view>
 	</view>
-	<!-- <uni-fab v-if="role=='AUDITOR' || role=='admin'" :pattern="pattern" :content="content" @trigger="trigger" /> -->
 </template>
 
 <script>

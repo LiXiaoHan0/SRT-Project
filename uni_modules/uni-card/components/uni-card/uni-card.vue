@@ -23,6 +23,7 @@
 				</view>
 				<view class="uni-card__header-extra" @click="onClick('extra')">
 					<text class="uni-card__header-extra-text">{{ extra }}</text>
+					<slot name="extra"></slot>
 				</view>
 			</view>
 		</slot>
