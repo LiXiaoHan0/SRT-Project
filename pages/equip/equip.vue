@@ -70,9 +70,9 @@
 				// 数据库查询
 				const db = uniCloud.database();
 				const tmp1=db.collection('srt-appoint').where(`eid=="${this.equip.eid}" && date>="${dates[0]}" && date<="${dates[6]}"`).field('start,end,date').orderBy('date asc,start asc').getTemp()
-				const tmp2=db.collection('srt-occupy').where(`eid=="${this.equip.eid}" && (y_m=="${dates[0].substr(0,7)}" || y_m=="${dates[6].substr(0,7)}")`).field('day,y_m').orderBy('y_m asc').getTemp()
+				const tmp2=db.collection('srt-occupy').where(`y_m=="${dates[0].substr(0,7)}" || y_m=="${dates[6].substr(0,7)}"`).field('day,y_m').orderBy('y_m asc').getTemp()
 				db.multiSend(tmp1,tmp2).then(({result})=>{
-					// console.log(result)
+					console.log(result)
 					let j=0,k=0,begin=18,occupy=0
 					let {data}=result.dataList[0]
 					let {data:data0}=result.dataList[1]
@@ -150,7 +150,7 @@
 							break;
 						default:
 							uni.showToast({
-								title:'该时间段设备不开放预约',
+								title:'该时间段不开放预约',
 								icon: 'none'
 							})
 					}

@@ -35,7 +35,7 @@
 		data() {
 			return {
 				equips:[],
-				tags:[['空闲','success'],['停用','default'],['占用','error']]
+				tags:[['空闲中','success'],['未开放','default'],['使用中','error']]
 			}
 		},
 		computed: {
@@ -112,22 +112,24 @@
 					const hour=(now.getHours()+parseInt(now.getMinutes()/60))<<1
 					// 数据库查询
 					const db = uniCloud.database();
-					const tmp1=db.collection('srt-appoint').where(`date=="${date}" && start<=${hour} && end>${hour}`).field('eid,end').getTemp()
+					const tmp0=db.collection('srt-appoint').where(`date=="${date}" && start<=${hour} && end>${hour}`).field('eid,end').getTemp()
+					const tmp1=db.collection('srt-equip',tmp0).orderBy('order asc').getTemp()
 					const tmp2=db.collection('srt-occupy').where(`y_m=="${date.substr(0,7)}"`).field('eid,day').getTemp()
-					db.collection('srt-equip',tmp1,tmp2).orderBy('order asc').get().then(({result})=>{
-						console.log(result)
-						for(let i in result.data){
-							let t=result.data[i]
+					db.multiSend(tmp1,tmp2).then(({result})=>{
+						let t1=result.dataList[0].data
+						let t2=result.dataList[1].data
+						for(let i in t1){
+							let t=t1[i]
 							if(t._id['srt-appoint'].length){
 								// t.state=(t._id['srt-appoint'][0].end-hour)/2
 								t.state=2 // 使用状态
-							} else if(t._id['srt-occupy'].length && t._id['srt-occupy'][0].day&1<<now.getDate()){
+							} else if(t2[0].day&1<<now.getDate()){
 								t.state=1 // 禁用状态
 							} else{
 								t.state=0 // 空闲状态
 							}
 						}
-						this.equips=result.data
+						this.equips=t1
 						uni.hideLoading()
 					}).catch(err=>{
 						console.log(err)

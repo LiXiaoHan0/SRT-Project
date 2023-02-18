@@ -88,10 +88,11 @@
 					// 接收预约取消通知
 					if(res['2oavjREU4Kvy_hp3YYsRhkGpDgqkmleueBoFf9J358Q']=='accept'){this.appointData.state+=2}
 					// 提交预约信息
-					return this.$refs.infoForm.validate(['state'])
+					return this.$refs.infoForm.validate(['state','date','eid'])
 				}).then(formData=>{
 					formData.uid=uniCloud.getCurrentUserInfo().uid
 					console.log(formData)
+					let now=new Date()
 					return uniCloud.callFunction({
 							name:'check-time',
 							data:{
