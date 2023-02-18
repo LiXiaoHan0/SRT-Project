@@ -79,71 +79,64 @@
 				this.rules.end.rules[1].minimum=e+1
 			},
 			submitForm(){
-				uni.showLoading({mask:true})
-				this.$refs.infoForm.validate(['date','eid','state']).then(formData=>{
+				uni.requestSubscribeMessage({
+					tmplIds: ['565SlmswFgNuEezLZ1Mnd4UbHgL4cgwhpfSxaUlKciw','2oavjREU4Kvy_hp3YYsRhkGpDgqkmleueBoFf9J358Q'],
+				}).then(res=>{
+					uni.showLoading({mask:true})
+					// 接收预约提醒通知
+					if(res['565SlmswFgNuEezLZ1Mnd4UbHgL4cgwhpfSxaUlKciw']=='accept'){this.appointData.state+=1}
+					// 接收预约取消通知
+					if(res['2oavjREU4Kvy_hp3YYsRhkGpDgqkmleueBoFf9J358Q']=='accept'){this.appointData.state+=2}
+					// 提交预约信息
+					return this.$refs.infoForm.validate(['state'])
+				}).then(formData=>{
 					formData.uid=uniCloud.getCurrentUserInfo().uid
 					console.log(formData)
-					return new Promise((resolve,reject)=>{
-						uni.hideLoading()
-						uni.requestSubscribeMessage({
-							tmplIds: ['565SlmswFgNuEezLZ1Mnd4UbHgL4cgwhpfSxaUlKciw','2oavjREU4Kvy_hp3YYsRhkGpDgqkmleueBoFf9J358Q'],
-						}).then(res=>{
-							const now=new Date()
-							// 提前预约45分钟以上才会收到提醒信息
-							if(res['565SlmswFgNuEezLZ1Mnd4UbHgL4cgwhpfSxaUlKciw']=='accept' && (formData.date!=utils.formatTime(now) || formData.start-2*now.getHours()-now.getMinutes()/30>1.5)){formData.state+=1}
-							// 接收预约取消通知
-							if(res['2oavjREU4Kvy_hp3YYsRhkGpDgqkmleueBoFf9J358Q']=='accept'){formData.state+=2}
-							// 提交预约信息
-							uni.showLoading({mask:true})
-							return uniCloud.callFunction({
-								name:'check-time',
-								data:{
-									value:formData,
-									time:{
-										today:utils.formatTime(now),
-										hour:(now.getHours()<<1)+parseInt(now.getMinutes()/30)
-									}
+					return uniCloud.callFunction({
+							name:'check-time',
+							data:{
+								value:formData,
+								time:{
+									today:utils.formatTime(now),
+									hour:(now.getHours()<<1)+parseInt(now.getMinutes()/30)
 								}
-							})
-						}).then(({result})=>{
-							console.log(result)
-							uni.hideLoading()
-							switch (result){
-								case 100:
-									uni.showToast({
-										icon: 'success',
-										title: '预约提交成功',
-										mask: true
-									})
-									setTimeout(uni.navigateBack,1500,{delta:2})
-									break;
-								case 101:
-									uni.showToast({
-										icon: 'error',
-										title: '包含过去时间段',
-										mask: true
-									})
-									break;
-								case 102:
-									uni.showToast({
-										icon: 'error',
-										title: '预约时间冲突',
-										mask: true
-									})
-									setTimeout(uni.navigateBack,1500,{delta:1})
-									break;
-								default:
-									uni.showToast({
-										icon: 'error',
-										title: '服务器请求错误',
-										mask: true
-									})
 							}
-							
-						}).catch(err=>{
-								reject(err)
 						})
-					})
+				}).then(({result})=>{
+					console.log(result)
+					uni.hideLoading()
+					switch (result){
+						case 100:
+							uni.showToast({
+								icon: 'success',
+								title: '预约提交成功',
+								mask: true
+							})
+							setTimeout(uni.navigateBack,1500,{delta:2})
+							break;
+						case 101:
+							uni.showToast({
+								icon: 'error',
+								title: '包含过去时间段',
+								mask: true
+							})
+							break;
+						case 102:
+							uni.showToast({
+								icon: 'error',
+								title: '预约时间冲突',
+								mask: true
+							})
+							setTimeout(uni.navigateBack,1500,{delta:1})
+							break;
+						default:
+							uni.showToast({
+								icon: 'error',
+								title: '服务器请求错误',
+								mask: true
+							})
+					}
+					setTimeout(uni.navigateBack,1500,{delta:1})
 				}).catch(err => {
 					utils.errReport(err)
 				})
