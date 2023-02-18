@@ -23,6 +23,8 @@
 			<uni-tag :circle="true" :text="tags[equip.state][0]" :type="tags[equip.state][1]"/>
 		</uni-card>
 	</view>
+	<!-- 版本号 -->
+	<view class="version">Copyright 2022 , Version : 0.6.0</view>
 </template>
 
 <script>
@@ -264,5 +266,16 @@
 		width: 50%;
 		min-width: 175px;
 		max-width: 250px;
+	}
+	
+	.version{
+		padding-bottom: 10px;
+		width: 100%;
+		text-align: center;
+		position: absolute;
+		
+		color: #CCC;
+		font-size: 12px;
+		font-weight: light;
 	}
 </style>
