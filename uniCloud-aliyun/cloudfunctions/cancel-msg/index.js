@@ -25,7 +25,7 @@ exports.main = async (event, context) => {
 	}).end()
 	for(let i in res.data){
 		let item=res.data[i]
-		if((item.state>>1)==1){
+		// if((item.state>>1)==1){
 			await uniCloud.httpclient.request(
 				`https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=${data[0].token}`, {
 					method: 'POST',
@@ -49,7 +49,7 @@ exports.main = async (event, context) => {
 					contentType: 'json',
 					dataType: 'json'
 				})
-		}
+		// }
 	}
 	await db.collection('srt-appoint').where({
 		_id: db.command.in(event.item)

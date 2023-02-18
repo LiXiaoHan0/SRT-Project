@@ -236,4 +236,15 @@
 		font-weight: light;
 		
 	}
+	
+	.version{
+		padding-bottom: 10px;
+		width: 100%;
+		text-align: center;
+		position: absolute;
+		
+		color: #CCC;
+		font-size: 12px;
+		font-weight: light;
+	}
 </style>
