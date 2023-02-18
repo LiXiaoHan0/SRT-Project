@@ -95,36 +95,29 @@
 				this.rules.end.rules[1].minimum=e+1
 			},
 			submitForm(){
-				uni.showLoading({mask:true})
-				this.$refs.infoForm.validate(['state']).then(formData=>{
+				uni.requestSubscribeMessage({
+					tmplIds: ['565SlmswFgNuEezLZ1Mnd4UbHgL4cgwhpfSxaUlKciw','2oavjREU4Kvy_hp3YYsRhkGpDgqkmleueBoFf9J358Q'],
+				}).then(res=>{
+					uni.showLoading({mask:true})
+					// 接收预约提醒通知
+					if(res['565SlmswFgNuEezLZ1Mnd4UbHgL4cgwhpfSxaUlKciw']=='accept'){this.appointData.state+=1}
+					// 接收预约取消通知
+					if(res['2oavjREU4Kvy_hp3YYsRhkGpDgqkmleueBoFf9J358Q']=='accept'){this.appointData.state+=2}
+					// 提交预约信息
+					return this.$refs.infoForm.validate(['state'])
+				}).then(formData=>{
 					formData.uid=uniCloud.getCurrentUserInfo().uid
 					console.log(formData)
-					return new Promise((resolve,reject)=>{
-						uni.hideLoading()
-						uni.requestSubscribeMessage({
-							tmplIds: ['565SlmswFgNuEezLZ1Mnd4UbHgL4cgwhpfSxaUlKciw','2oavjREU4Kvy_hp3YYsRhkGpDgqkmleueBoFf9J358Q'],
-						}).then(res=>{
-							const now=new Date()
-							// 提前预约45分钟以上才会收到提醒信息
-							if(res['565SlmswFgNuEezLZ1Mnd4UbHgL4cgwhpfSxaUlKciw']=='accept' && (formData.date!=utils.formatTime(now) || formData.start-2*now.getHours()-now.getMinutes()/30>1.5)){formData.state+=1}
-							// 接收预约取消通知
-							if(res['2oavjREU4Kvy_hp3YYsRhkGpDgqkmleueBoFf9J358Q']=='accept'){formData.state+=2}
-							// 提交预约信息
-							uni.showLoading({mask:true})
-							return db.collection('srt-appoint').add(formData)
-						}).then(({result})=>{
-							console.log(result)
-							uni.hideLoading()
-							uni.showToast({
-								icon: 'success',
-								title: '预约提交成功',
-								mask: true
-							})
-							setTimeout(uni.navigateBack,1500,{delta:1})
-						}).catch(err=>{
-								reject(err)
-						})
+					return db.collection('srt-appoint').add(formData)
+				}).then(({result})=>{
+					console.log(result)
+					uni.hideLoading()
+					uni.showToast({
+						icon: 'success',
+						title: '预约提交成功',
+						mask: true
 					})
+					setTimeout(uni.navigateBack,1500,{delta:1})
 				}).catch(err => {
 					utils.errReport(err)
 				})

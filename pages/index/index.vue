@@ -30,7 +30,7 @@
 		</uni-button>
 	</view>
 	<!-- 版本号 -->
-	<view class="version">Copyright 2022 , Version : 0.5.1</view>
+	<view class="version">Copyright 2022 , Version : 0.5.3</view>
 </template>
 
 <script>
