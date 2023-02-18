@@ -86,7 +86,7 @@
 					// 接收预约提醒通知
 					if(res['565SlmswFgNuEezLZ1Mnd4UbHgL4cgwhpfSxaUlKciw']=='accept'){this.appointData.state+=1}
 					// 接收预约取消通知
-					if(res['2oavjREU4Kvy_hp3YYsRhkGpDgqkmleueBoFf9J358Q']=='accept'){this.appointData.state+=2}
+					// if(res['2oavjREU4Kvy_hp3YYsRhkGpDgqkmleueBoFf9J358Q']=='accept'){this.appointData.state+=2}
 					// 提交预约信息
 					return this.$refs.infoForm.validate(['state','date','eid'])
 				}).then(formData=>{

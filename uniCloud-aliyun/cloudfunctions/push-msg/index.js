@@ -9,7 +9,7 @@ exports.main = async (event, context) => {
 	let res = await db.collection('srt-appoint').aggregate().match({
 		date: ch_time.toISOString().slice(0, 10),
 		start: 2 * ch_time.getHours() + 2,
-		state: 1 || 3
+		state: 1
 	}).project({
 		uid: true,
 		start: $.divide(['$start',2]),
